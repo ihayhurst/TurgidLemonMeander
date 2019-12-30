@@ -23,27 +23,37 @@ def generateGraph(reading_count, area_name):
       plt.clf()
       plt.close('all')
       return
-    x, y   = readValues(*args, **kwargs)
-    drawGraph(x,y, area_name)
+    x, y, h, p   = readValues(*args, **kwargs)
+    drawGraph(x,y,h,p, area_name)
 
-def drawGraph(x,y, area_name):
+def drawGraph(x,y,h,p, area_name):
     x2 = mdates.date2num(x)
     x_sm = np.array(x2)
-    y_sm = np.array(y)
     x_smooth = np.linspace(x_sm.min(), x_sm.max(), 200)
     spl = make_interp_spline(x2, y, k=3)
+    spl_h = make_interp_spline(x2, h, k=3)
+    spl_p = make_interp_spline(x2, p, k=3)
     y_smooth = spl(x_smooth)
+    h_smooth = spl_h(x_smooth)
+    p_smooth = spl_p(x_smooth)
+
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %H:%M'))
+    hh = ax.twinx()
+    pp = ax.twinx()
 
-    plt.grid(b=True, which='major', axis='both', color='black')
+    #ax.grid(b=True, which='major', axis='both', color='black')
+    ax.xaxis.grid(False)
+
     plt.plot([],[])
     x_smooth_dt = mdates.num2date(x_smooth)
-    plt.plot(x_smooth_dt, y_smooth, 'red', linewidth=1)
+    ax.plot(x_smooth_dt, y_smooth, 'red', linewidth=1)
+    hh.plot(x_smooth_dt, h_smooth, 'green', linewidth=1)
+    pp.plot(x_smooth_dt, p_smooth, 'blue', linewidth=1)
     plt.gcf().autofmt_xdate()
     plt.xlabel('Time (Month-Day - Hour: Minutes)')
     plt.ylabel('Temperature \u2103')
-    plt.title(str(area_name) + ' Temperature logged by Pi')
+    plt.title(str(area_name) + ' Temperature, Humidity and Pressure logged by Pi')
     plt.savefig('graph.png')
     print('Created graph\n')
     plt.clf()
@@ -63,10 +73,15 @@ def readValues(*args, **kwargs):
 
     log_dt_format = LOG_DT_FORMAT
 
-    x=[]
-    y=[]
+    x=[] #Datetime
+    y=[] #Temperature
+    h=[] #Humidity 
+    p=[] #Presure
     x.clear()
     y.clear()
+    h.clear()
+    p.clear()
+
     try:
         tailmode = kwargs.get('tailmode')
     except:
@@ -84,17 +99,21 @@ def readValues(*args, **kwargs):
             line = line.translate({ord(i): None for i in '[]'})
             data = re.split(" ", line)
             temp, humidity, pressure =  float(data[2]), float(data[3]), float(data[4])
-            print(f'Temp: {temp} Humidity:{humidity} Pressure:{pressure}\n')
+            #print(f'Temp: {temp} Humidity:{humidity} Pressure:{pressure}\n')
             dt = str(data[0])+" "+str(data[1])
             dt = date_to_dt(dt, LOG_DT_FORMAT)
             if tailmode:
                 x.append(dt)
                 y.append(temp)
+                h.append(humidity)
+                p.append(pressure)
             else:
                 if (dt >= from_dt) and (dt <= to_dt):
                     x.append(dt)
                     y.append(temp)
-        return x,y
+                    h.append(humidity)
+                    p.append(pressure)
+        return x,y,h,p
 
 def cmd_args(args=None):
     parser = argparse.ArgumentParser("Graph.py charts range of times from a temperature log")
@@ -198,8 +217,8 @@ def main(args=None):
         kwargs={'tailmode': False, 'from_date': opt.start, 'to_date': opt.end, **kwargs}
 
 
-    x, y  = readValues(*args, **kwargs)
-    drawGraph(x,y, area_name)
+    x, y, h, p  = readValues(*args, **kwargs)
+    drawGraph(x,y,h,p, area_name)
     sys.exit(1)
 
 if __name__ == '__main__':
