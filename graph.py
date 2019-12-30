@@ -38,6 +38,7 @@ def drawGraph(x,y,h,p, area_name):
     p_smooth = spl_p(x_smooth)
 
     fig, ax = plt.subplots(figsize=(10, 6))
+    fig.subplots_adjust(right=0.75)
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %H:%M'))
     hh = ax.twinx()
     pp = ax.twinx()
@@ -53,6 +54,8 @@ def drawGraph(x,y,h,p, area_name):
     plt.gcf().autofmt_xdate()
     plt.xlabel('Time (Month-Day - Hour: Minutes)')
     plt.ylabel('Temperature \u2103')
+    hh.set_ylabel('Humidity %')
+    pp.set_ylabel('Pressure mBar')
     plt.title(str(area_name) + ' Temperature, Humidity and Pressure logged by Pi')
     plt.savefig('graph.png')
     print('Created graph\n')
