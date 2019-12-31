@@ -10,7 +10,7 @@ import config
 
 DT_FORMAT       = '%Y/%m/%d-%H:%M'
 LOG_DT_FORMAT = config.log_date_format
-area_name = 'Room'
+area_name = config.area_name 
 
 def generateGraph(reading_count, area_name):
     '''Wrapper for drawgraph called from '''
@@ -39,23 +39,34 @@ def drawGraph(x,y,h,p, area_name):
 
     fig, ax = plt.subplots(figsize=(10, 6))
     fig.subplots_adjust(right=0.75)
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %H:%M'))
+    fig.autofmt_xdate()
     hh = ax.twinx()
     pp = ax.twinx()
 
-    #ax.grid(b=True, which='major', axis='both', color='black')
-    ax.xaxis.grid(False)
+    ax.grid(which='major', axis='x', color='grey')
+    hh.spines["right"].set_position(("axes", 1.2))
 
     plt.plot([],[])
     x_smooth_dt = mdates.num2date(x_smooth)
-    ax.plot(x_smooth_dt, y_smooth, 'red', linewidth=1)
-    hh.plot(x_smooth_dt, h_smooth, 'green', linewidth=1)
-    pp.plot(x_smooth_dt, p_smooth, 'blue', linewidth=1)
-    plt.gcf().autofmt_xdate()
+    #ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %H:%M'))
+    maFmt = mdates.DateFormatter('%b-d')
+    miFmt = mdates.DateFormatter('%H-%M')
+    ax.xaxis.set_major_formatter(maFmt)
+    ax.xaxis.set_minor_formatter(miFmt)
+    for label in ax.xaxis.get_minorticklabels()[::2]: # show every other minor label
+        label.set_visible(False)
+    ax.tick_params(axis='both', which='major', labelsize=10)
+
     plt.xlabel('Time (Month-Day - Hour: Minutes)')
-    plt.ylabel('Temperature \u2103')
-    hh.set_ylabel('Humidity %')
-    pp.set_ylabel('Pressure mBar')
+    temperature_color = 'tab:red'
+    humidity_color    = 'tab:green'
+    pressure_color    = 'tab:blue'
+    ax.set_ylabel('Temperature \u2103', color=temperature_color)
+    hh.set_ylabel('Humidity %',         color=humidity_color)
+    pp.set_ylabel('Pressure mBar',      color=pressure_color)
+    ax.plot(x_smooth_dt, y_smooth, color=temperature_color, linewidth=1)
+    hh.plot(x_smooth_dt, h_smooth, color=humidity_color, linewidth=1)
+    pp.plot(x_smooth_dt, p_smooth, color=pressure_color, linewidth=1)
     plt.title(str(area_name) + ' Temperature, Humidity and Pressure logged by Pi')
     plt.savefig('graph.png')
     print('Created graph\n')
