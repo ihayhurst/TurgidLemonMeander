@@ -8,8 +8,8 @@ import numpy as np
 import sys, argparse, re, datetime
 import config
 
-DT_FORMAT       = '%Y/%m/%d-%H:%M'
-LOG_DT_FORMAT = config.log_date_format
+DT_FORMAT       = '%Y/%m/%d-%H:%M'      #format used on the cli
+LOG_DT_FORMAT = config.log_date_format  #set in config.py to match the format used in the log file
 area_name = config.area_name 
 
 def generateGraph(reading_count, area_name):
