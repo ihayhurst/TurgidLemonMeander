@@ -3,3 +3,4 @@ A followup project of https://github.com/Dragon8oy/temp-report using a Rapberry 
 
 ![alt text](https://ihayhurst.github.io/TurgidLemonMeander/graph.png)
 
+![al_text](https://ihayhurst@github.io/TurgidLemonMeander/BMP280-fritzing.png)
