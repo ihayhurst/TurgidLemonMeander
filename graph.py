@@ -3,10 +3,11 @@ import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from scipy.interpolate import make_interp_spline, BSpline
 import numpy as np
-import sys, argparse, re, datetime
+import sys, argparse, datetime
 import config
+from re import split
+from scipy.interpolate import make_interp_spline, BSpline
 
 DT_FORMAT       = '%Y/%m/%d-%H:%M'      #format used on the cli
 LOG_DT_FORMAT = config.log_date_format  #set in config.py to match the format used in the log file
@@ -111,7 +112,7 @@ def readValues(*args, **kwargs):
             taildata = f.readlines()
         for line in taildata:
             line = line.translate({ord(i): None for i in '[]'})
-            data = re.split(" ", line)
+            data = split(" ", line)
             temp, humidity, pressure =  float(data[2]), float(data[3]), float(data[4])
             dt = f'{data[0]} {data[1]}'
             dt = date_to_dt(dt, LOG_DT_FORMAT)
@@ -149,7 +150,7 @@ def parse_duration(duration):
     hours = datetime.timedelta(hours = 1)
     days = datetime.timedelta(days = 1)
     weeks = datetime.timedelta(weeks = 1)
-    fields = re.split('(\d+)',duration)
+    fields = split('(\d+)',duration)
     #print(fields[1],"--",fields[2])
     duration = int(fields[1])
     if fields[2][:1].upper() == 'H':
