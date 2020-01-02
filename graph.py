@@ -113,8 +113,7 @@ def readValues(*args, **kwargs):
             line = line.translate({ord(i): None for i in '[]'})
             data = re.split(" ", line)
             temp, humidity, pressure =  float(data[2]), float(data[3]), float(data[4])
-            #print(f'Temp: {temp} Humidity:{humidity} Pressure:{pressure}\n')
-            dt = str(data[0])+" "+str(data[1])
+            dt = f'{data[0]} {data[1]}'
             dt = date_to_dt(dt, LOG_DT_FORMAT)
             if tailmode:
                 x.append(dt)
