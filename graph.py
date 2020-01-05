@@ -4,28 +4,30 @@ mpl.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
-import sys, argparse, datetime
+import sys, os, argparse, datetime, base64, io
 import config
 from re import split
 from scipy.interpolate import make_interp_spline, BSpline
 
 DT_FORMAT       = '%Y/%m/%d-%H:%M'      #format used on the cli
 LOG_DT_FORMAT = config.log_date_format  #set in config.py to match the format used in the log file
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))   # refers to application_top
+APP_STATIC = os.path.join(APP_ROOT, 'static')
 area_name = config.area_name 
 
 def generateGraph(reading_count, area_name):
     '''Wrapper for drawgraph called from '''
     kwargs = {'tailmode' : True}
     args   = {reading_count}
-    if len(open('hpt.log', encoding="utf-8").readlines(  )) < reading_count:
-      print('Not enough lines in logfile, aborting\n')
-      plt.figure()
-      plt.savefig('hpt.png')
-      plt.clf()
-      plt.close('all')
-      return
+    #if len(open('hpt.log', encoding="utf-8").readlines()) < reading_count:
+    #  print('Not enough lines in logfile, aborting\n')
+    #  plt.figure()
+    #  plt.savefig('hpt.png')
+    #  plt.clf()
+    #  plt.close('all')
+    #  return
     x, y, h, p   = readValues(*args, **kwargs)
-    drawGraph(x,y,h,p, area_name)
+    return(drawGraph(x,y,h,p, area_name))
 
 def drawGraph(x,y,h,p, area_name):
     x2 = mdates.date2num(x)
@@ -69,10 +71,16 @@ def drawGraph(x,y,h,p, area_name):
     hh.plot(x_smooth_dt, h_smooth, color=humidity_color, linewidth=1)
     pp.plot(x_smooth_dt, p_smooth, color=pressure_color, linewidth=1)
     plt.title(str(area_name) + ' Temperature, Humidity and Pressure logged by Pi')
-    plt.savefig('graph.png')
+    pic_IObytes = io.BytesIO()
+    #plt.savefig('graph.png', format='png')
+    plt.savefig(pic_IObytes,  format='png')
+    pic_IObytes.seek(0)
+    pic_hash = base64.b64encode(pic_IObytes.read())
     print('Created graph\n')
+    #print (pic_hash)
     plt.clf()
     plt.close('all')
+    return pic_hash
 
 def readValues(*args, **kwargs):
     '''for key, value in kwargs.items():     #Debug
@@ -104,8 +112,8 @@ def readValues(*args, **kwargs):
     if not tailmode:
         from_dt = date_to_dt(kwargs.get('from_date'),DT_FORMAT)
         to_dt = date_to_dt(kwargs.get('to_date'),DT_FORMAT)
-
-    with open('hpt.log', 'r', encoding="utf-8") as f:
+    filename = os.path.join(APP_ROOT, 'hpt.log')
+    with open(filename, 'r', encoding="utf-8") as f:
         if tailmode:
             taildata = f.readlines() [-reading_count:]
         else:

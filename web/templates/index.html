@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+This is us
+
+      <img src="data:image/png;base64, {{ graphImageData }}" alt="Temperature Graph" height="360" width="600">
+
+
+      <form action = "/" method = "POST">
+         <p>Text field <input type = "text" name = "Syngenta_email" /></p>
+         <input type="radio" name="region" value="2"> 2 Hours <br/>
+         <input type="radio" name="region" value="4" checked> 4 Hours <br/>
+         <input type="radio" name="region" value="24"> 24 Hours <br/>
+         <input type="radio" name="region" value="48"> 48 Hours <br/>
+         <p><input type = "submit" value = "Redraw" /></p>
+      </form>
+{% endblock %}
