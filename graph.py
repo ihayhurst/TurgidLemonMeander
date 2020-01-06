@@ -17,19 +17,20 @@ area_name = config.area_name
 
 def generateGraph(reading_count, area_name):
     '''Wrapper for drawgraph called from '''
-    kwargs = {'tailmode' : True}
+    kwargs = {'tailmode' : True, 'text' : True}
     args   = {reading_count}
-    #if len(open('hpt.log', encoding="utf-8").readlines()) < reading_count:
-    #  print('Not enough lines in logfile, aborting\n')
-    #  plt.figure()
-    #  plt.savefig('hpt.png')
-    #  plt.clf()
-    #  plt.close('all')
-    #  return
+    filename = os.path.join(APP_ROOT, 'hpt.log')
+    if len(open(filename, encoding="utf-8").readlines()) < reading_count:
+      print('Not enough lines in logfile, aborting\n')
+      plt.figure()
+      plt.savefig('hpt.png')
+      plt.clf()
+      plt.close('all')
+      return
     x, y, h, p   = readValues(*args, **kwargs)
-    return(drawGraph(x,y,h,p, area_name))
+    return(drawGraph(x,y,h,p, area_name, **kwargs))
 
-def drawGraph(x,y,h,p, area_name):
+def drawGraph(x,y,h,p, area_name, **kwargs):
     x2 = mdates.date2num(x)
     x_sm = np.array(x2)
     x_smooth = np.linspace(x_sm.min(), x_sm.max(), 200)
@@ -71,16 +72,21 @@ def drawGraph(x,y,h,p, area_name):
     hh.plot(x_smooth_dt, h_smooth, color=humidity_color, linewidth=1)
     pp.plot(x_smooth_dt, p_smooth, color=pressure_color, linewidth=1)
     plt.title(str(area_name) + ' Temperature, Humidity and Pressure logged by Pi')
-    pic_IObytes = io.BytesIO()
-    #plt.savefig('graph.png', format='png')
-    plt.savefig(pic_IObytes,  format='png')
-    pic_IObytes.seek(0)
-    pic_hash = base64.b64encode(pic_IObytes.read())
-    print('Created graph\n')
-    #print (pic_hash)
-    plt.clf()
-    plt.close('all')
-    return pic_hash
+
+    if kwargs.get('text'):
+        pic_IObytes = io.BytesIO()
+        plt.savefig(pic_IObytes,  format='png')
+        pic_IObytes.seek(0)
+        pic_hash = base64.b64encode(pic_IObytes.read())
+        print("Text out clause")
+        return  pic_hash
+
+    else:  
+        plt.savefig('graph.png', format='png')
+        print('Created graph\n')
+        plt.clf()
+        plt.close('all')
+    return 
 
 def readValues(*args, **kwargs):
     '''for key, value in kwargs.items():     #Debug
@@ -112,6 +118,7 @@ def readValues(*args, **kwargs):
     if not tailmode:
         from_dt = date_to_dt(kwargs.get('from_date'),DT_FORMAT)
         to_dt = date_to_dt(kwargs.get('to_date'),DT_FORMAT)
+
     filename = os.path.join(APP_ROOT, 'hpt.log')
     with open(filename, 'r', encoding="utf-8") as f:
         if tailmode:
@@ -148,18 +155,18 @@ def cmd_args(args=None):
                     help='End   date YYYY/MM/DD-HH:MM')
     parser.add_argument('-d', '--dur',  dest='dur',
                     help='Duration: Hours, Days, Weeks,  e.g. 2W for 2 weeks')
+    parser.add_argument('-t', '--text',  dest='text',
+                    help='Output graphic as base64 encoded text')
 
     opt = parser.parse_args(args)
 
     return opt
 
 def parse_duration(duration):
-    #print("Duration == ",duration)
     hours = datetime.timedelta(hours = 1)
     days = datetime.timedelta(days = 1)
     weeks = datetime.timedelta(weeks = 1)
     fields = split('(\d+)',duration)
-    #print(fields[1],"--",fields[2])
     duration = int(fields[1])
     if fields[2][:1].upper() == 'H':
         duration_td = duration * hours
@@ -237,10 +244,17 @@ def main(args=None):
     if not opt.lines:
         print("Not Tailmode")
         kwargs={'tailmode': False, 'from_date': opt.start, 'to_date': opt.end, **kwargs}
+    
+    if opt.text != None:
+        print("Base64 encoded png output")
+        kwargs={'text': True, **kwargs}
 
+    if not opt.text:    
+        print("png output file")
+        kwargs={'text': False, **kwargs}
 
     x, y, h, p  = readValues(*args, **kwargs)
-    drawGraph(x,y,h,p, area_name)
+    drawGraph(x,y,h,p, area_name, **kwargs)
     sys.exit(1)
 
 if __name__ == '__main__':
