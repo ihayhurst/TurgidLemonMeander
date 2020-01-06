@@ -14,7 +14,7 @@ def index():
         region = int(result['region'])*6 #3600 sec in hour / delay interval 600
         lookup = "wibble"
     else:
-        region = 14
+        region = (6*24)
 
     graphImageData = graph.generateGraph(region, 'Conservatory')
     graphImageData = graphImageData.decode('utf-8')

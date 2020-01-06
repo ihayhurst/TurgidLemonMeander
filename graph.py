@@ -53,12 +53,12 @@ def drawGraph(x,y,h,p, area_name, **kwargs):
     plt.plot([],[])
     x_smooth_dt = mdates.num2date(x_smooth)
     #ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %H:%M'))
-    maFmt = mdates.DateFormatter('%b-d')
-    miFmt = mdates.DateFormatter('%H-%M')
+    maFmt = mdates.DateFormatter('%b-%d')
+    miFmt = mdates.DateFormatter('%H:%M')
     ax.xaxis.set_major_formatter(maFmt)
     ax.xaxis.set_minor_formatter(miFmt)
     for label in ax.xaxis.get_minorticklabels()[::2]: # show every other minor label
-        label.set_visible(False)
+        label.set_visible(True)
     ax.tick_params(axis='both', which='major', labelsize=10)
 
     plt.xlabel('Time (Month-Day - Hour: Minutes)')
@@ -78,7 +78,7 @@ def drawGraph(x,y,h,p, area_name, **kwargs):
         plt.savefig(pic_IObytes,  format='png')
         pic_IObytes.seek(0)
         pic_hash = base64.b64encode(pic_IObytes.read())
-        print("Text out clause")
+        print("Graph created in base64 encoding")
         return  pic_hash
 
     else:  
