@@ -7,14 +7,17 @@ app = Flask(__name__)
 @app.route("/", methods = ['POST', 'GET'])
 def index():
     result=[]
-    graphImageData = graph.generateGraph(14, 'Conservatory')
-    graphImageData = graphImageData.decode('utf-8')
     lookup="stuff"
     
     if request.method == 'POST':
         result = request.form
+        region = int(result['region'])*6 #3600 sec in hour / delay interval 600
         lookup = "wibble"
+    else:
+        region = 14
 
+    graphImageData = graph.generateGraph(region, 'Conservatory')
+    graphImageData = graphImageData.decode('utf-8')
     return render_template('index.html', result=result, lookup=lookup, graphImageData=graphImageData)
 
 
