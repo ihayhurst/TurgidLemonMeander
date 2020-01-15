@@ -100,7 +100,6 @@ def readValues(*args, **kwargs):
     else:
         reading_count = args[0]
 
-    log_dt_format = LOG_DT_FORMAT
 
     x=[] #Datetime
     y=[] #Temperature
@@ -166,7 +165,7 @@ def parse_duration(duration):
     hours = datetime.timedelta(hours = 1)
     days = datetime.timedelta(days = 1)
     weeks = datetime.timedelta(weeks = 1)
-    fields = split('(\d+)',duration)
+    fields = split(r'(\d+)',duration)
     duration = int(fields[1])
     if fields[2][:1].upper() == 'H':
         duration_td = duration * hours
