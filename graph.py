@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import matplotlib as mpl
-mpl.use('Agg')
+mpl.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
