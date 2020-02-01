@@ -254,11 +254,9 @@ def main(args=None):
 
     x, y, h, p  = readValues(*args, **kwargs)
     drawGraph(x,y,h,p, area_name, **kwargs)
-    sys.exit(1)
 
 if __name__ == '__main__':
     try:
         main(sys.argv[1:])
     except ValueError:
         print("Give me something to do")
-        sys.exit(1)
