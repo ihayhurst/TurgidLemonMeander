@@ -18,6 +18,7 @@ def index():
 
     graphImageData = graph.generateGraph(region, 'Conservatory')
     graphImageData = graphImageData.decode('utf-8')
-    return render_template('index.html', result=result, lookup=lookup, graphImageData=graphImageData)
+    title = "Pi weather report"
+    return render_template('index.html',title=title, result=result, lookup=lookup, graphImageData=graphImageData)
 
 
