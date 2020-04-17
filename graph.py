@@ -7,7 +7,7 @@ import numpy as np
 import sys, os, argparse, datetime, base64, io
 import config
 from re import split
-from scipy.interpolate import make_interp_spline, BSpline
+from scipy.interpolate import make_interp_spline
 
 DT_FORMAT       = '%Y/%m/%d-%H:%M'      #format used on the cli
 LOG_DT_FORMAT = config.log_date_format  #set in config.py to match the format used in the log file
