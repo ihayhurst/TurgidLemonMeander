@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
+import sys, os, argparse, datetime, base64, io
+from re import split
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
-import sys, os, argparse, datetime, base64, io
-import config
-from re import split
 from scipy.interpolate import make_interp_spline
+import config
 
 mpl.use('agg')
 DT_FORMAT       = '%Y/%m/%d-%H:%M'      # format used on the cli
@@ -112,10 +112,7 @@ def readValues(*args, **kwargs):
     h.clear()
     p.clear()
 
-    try:
-        tailmode = kwargs.get('tailmode')
-    except:
-        tailmode = True
+    tailmode = kwargs.get('tailmode', False)
     if not tailmode:
         from_dt = date_to_dt(kwargs.get('from_date'), DT_FORMAT)
         to_dt = date_to_dt(kwargs.get('to_date'), DT_FORMAT)
@@ -149,15 +146,15 @@ def readValues(*args, **kwargs):
 def cmd_args(args=None):
     parser = argparse.ArgumentParser("Graph.py charts range of times from a temperature log")
 
-    parser.add_argument('-l', '--lines',  type=int, dest='lines',
+    parser.add_argument('-l', '--lines', type=int, dest='lines',
                         help='Number of tailing log lines to plot')
-    parser.add_argument('-s', '--start',  dest='start',
+    parser.add_argument('-s', '--start', dest='start',
                         help='Start date YYYY/MM/DD-HH:MM')
-    parser.add_argument('-e', '--end',  dest='end',
+    parser.add_argument('-e', '--end', dest='end',
                         help='End   date YYYY/MM/DD-HH:MM')
-    parser.add_argument('-d', '--dur',  dest='dur',
+    parser.add_argument('-d', '--dur', dest='dur',
                         help='Duration: Hours, Days, Weeks,  e.g. 2W for 2 weeks')
-    parser.add_argument('-t', '--text',  dest='text',
+    parser.add_argument('-t', '--text', dest='text',
                         help='Output graphic as base64 encoded text')
 
     opt = parser.parse_args(args)
@@ -259,7 +256,7 @@ def main(args=None):
         print("png output file")
         kwargs = {'text': False, **kwargs}
 
-    x, y, h, p  = readValues(*args, **kwargs)
+    x, y, h, p = readValues(*args, **kwargs)
     drawGraph(x, y, h, p, area_name, **kwargs)
 
 
