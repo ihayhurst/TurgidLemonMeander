@@ -1,0 +1,29 @@
+
+services:
+
+  flask:
+    build: ./flask
+    container_name: flask
+    restart: always
+#    depends_on:
+#      - redis
+    environment:
+      - FLASK_ENV=development
+      - APP_NAME=WeatherReport
+    volumes:
+      - ./flask/app:/app/app
+    expose:
+      - 8080
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+
+#  redis:
+#    image: redis
+
+volumes:
+    app: {}

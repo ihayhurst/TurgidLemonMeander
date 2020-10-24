@@ -1,0 +1,114 @@
+/* static/style.css */
+header {
+  background-color: #2B2B2B;
+  height: 35px;
+  width: 100%;
+  opacity: .9;
+  margin-bottom: 10px;
+}
+
+.container {
+}
+/*
+  width: 1024px;
+  margin: 0 auto;
+}
+*/
+
+a {
+    color: green;
+}
+
+html, body {
+  font-family: "Lato", sans-serif;
+  background-color: #38373a;
+  color: white;
+}
+
+
+::selection {
+  background: #4ace4f;
+}
+
+::-moz-selection {
+  background: #4ace4f;
+}
+.tableborder {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+}
+input[type="radio"] {
+  display: none;
+}
+
+h1 {
+    color: navajowhite;
+    font-variant-caps: all-small-caps;
+    font-size: 46px;
+}
+
+h3 {
+  color: white;
+  font-size: 36px;
+}
+/*
+ * Display navigation links inline
+ */
+
+.menu {
+  float: left;
+  margin-top: 8px;
+}
+
+.menu li {
+  display: inline;
+}
+
+.menu li + li {
+  margin-left: 15px;
+}
+
+.menu li a {
+  color: orange;
+  text-decoration: none;
+}
+
+.menu li a:hover {
+  background-color: #666;
+}
+
+input[type=button], input[type=submit], input[type=reset] .form-submit-button {
+  display: inline-block;
+  padding: 5px 5px;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  opacity: 0.6;
+  transition: 0.3s;
+  outline: none;
+  color: #fff;
+  background-color: orange;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 2px #999;
+}
+
+input[type=submit]:hover {
+  opacity:1;
+  background-color: #3e8e41;
+}
+
+input[type=submit]:active {
+  background-color: #3e8e41;
+  box-shadow: 0 1px #666;
+  transform: translateY(2px);
+}
+span.command-text {
+    white-space: pre-wrap;
+    font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
+}
