@@ -2,8 +2,11 @@ import os
 from flask import render_template, Blueprint, current_app, request
 from flask import __version__ as __flask_version__
 import base64
-import . graph
-website = Blueprint('website', __name__)
+from app.website import graph
+website = Blueprint('website', __name__,
+                     static_folder='static',
+                     static_url_path='/website/static',
+                     template_folder='templates')
 
 
 @website.route("/", methods = ['POST', 'GET'])
@@ -15,11 +18,12 @@ def index():
         lookup = "wibble"
     else:
         region = (6*24)
+        lookup = "wibble"
 
     graphImageData = graph.generateGraph(region, 'Conservatory')
     graphImageData = graphImageData.decode('utf-8')
     title = "Pi weather report"
-    return render_template('index.html',title=title, result=result, lookup=lookup, graphImageData=graphImageData)
+    return render_template('index.html', title=title, result='wibble', lookup=lookup, graphImageData=graphImageData)
 
 
 @website.route("/about")

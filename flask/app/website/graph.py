@@ -6,14 +6,16 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
 from scipy.interpolate import make_interp_spline
-import config
+#from .log import config
 
 mpl.use('agg')
 DT_FORMAT       = '%Y/%m/%d-%H:%M'      # format used on the cli
-LOG_DT_FORMAT = config.log_date_format  # set in config.py to match the format used in the log file
+#LOG_DT_FORMAT = config.log_date_format  # set in config.py to match the format used in the log file
+LOG_DT_FORMAT = '%Y-%m-%d %H:%M:%S'
+#area_name = config.area_name
+area_name ='Conservatory'
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))   # refers to application_top
 APP_STATIC = os.path.join(APP_ROOT, 'static')
-area_name = config.area_name
 
 
 def generateGraph(reading_count, area_name):

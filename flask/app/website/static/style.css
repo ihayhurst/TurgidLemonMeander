@@ -41,8 +41,11 @@ html, body {
 th, td {
   padding: 10px;
 }
+
 input[type="radio"] {
-  display: none;
+  float: left;
+  clear: none;
+  margin: 2px 0 0 2px;
 }
 
 h1 {
