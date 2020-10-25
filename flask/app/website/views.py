@@ -10,7 +10,7 @@ website = Blueprint('website', __name__,
 
 
 @website.route("/", methods = ['POST', 'GET'])
-def index():
+def website_home():
 
     if request.method == 'POST':
         result = request.form
@@ -27,7 +27,7 @@ def index():
 
 
 @website.route("/about")
-def website_home():
+def website_about():
 
     # Use os.getenv("key") to get environment variables
     app_name = os.getenv("APP_NAME")

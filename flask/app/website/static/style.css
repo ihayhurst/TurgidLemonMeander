@@ -45,7 +45,7 @@ th, td {
 input[type="radio"] {
   float: left;
   clear: none;
-  margin: 2px 0 0 2px;
+  margin: 8px 8px 5px 5px;
 }
 
 h1 {
