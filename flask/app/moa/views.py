@@ -22,6 +22,6 @@ def moa_home():
 
 
         # Convert to HTML
-        md = markdown.markdown(content, extensions=['tables'])
+        md = markdown.markdown(content, extensions=['tables', 'fenced_code'])
         return md
 
