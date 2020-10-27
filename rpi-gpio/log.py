@@ -19,6 +19,6 @@ while True:
     temp = round(float(bme280_data.temperature), 2)
     date = datetime.now().strftime(DT_LOG_FORMAT)
     print(f"[{date}] {temp} {humidity} {pressure}")
-    with open("hpt.log", "+a") as f:
+    with open("/data-log/hpt.log", "+a") as f:
         f.write(f"[{date}] {temp} {humidity} {pressure}\n")
     sleep(delay)

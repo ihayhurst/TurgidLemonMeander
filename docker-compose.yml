@@ -12,10 +12,18 @@ services:
       - APP_NAME=WeatherReport
     volumes:
       - ./flask/app:/app/app
+      - ./data-log/:/app/app/data-log/
     expose:
       - 8080
 
-  #log:
+  log:
+    build: ./rpi-gpio
+    container_name: rpi-gpio
+    volumes:
+      - ./data-log/:/data-log/
+    devices:
+      - "/dev/i2c-1:/dev/i2c-1"
+    restart: always 
       
   nginx:
     build: ./nginx
