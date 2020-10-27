@@ -1,5 +1,5 @@
 from flask import Blueprint, Response
-from flask import current_app as app
+#from flask import current_app as app
 from flask_restful import Api, Resource
 import markdown
 import os

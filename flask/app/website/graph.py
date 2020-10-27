@@ -6,7 +6,10 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
 from scipy.interpolate import make_interp_spline
+from flask import Blueprint
 
+
+website = Blueprint("website", __name__)
 # from .log import config
 
 mpl.use("agg")
@@ -23,7 +26,7 @@ def generateGraph(reading_count, area_name):
     """Wrapper for drawgraph called from """
     kwargs = {"tailmode": True, "text": True}
     args = {reading_count}
-    filename = os.path.join(APP_ROOT, "hpt.log")
+    filename = os.path.join(website.root_path, "data-log/hpt.log")
     if len(open(filename, encoding="utf-8").readlines()) < reading_count:
         print("Not enough lines in logfile, aborting\n")
         plt.figure()
@@ -120,7 +123,7 @@ def readValues(*args, **kwargs):
         from_dt = date_to_dt(kwargs.get("from_date"), DT_FORMAT)
         to_dt = date_to_dt(kwargs.get("to_date"), DT_FORMAT)
 
-    filename = os.path.join(APP_ROOT, "hpt.log")
+    filename = os.path.join(APP_ROOT, "data-log/hpt.log")
     with open(filename, "r", encoding="utf-8") as f:
         if tailmode:
             taildata = f.readlines()[-reading_count:]

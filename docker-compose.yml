@@ -12,7 +12,7 @@ services:
       - APP_NAME=WeatherReport
     volumes:
       - ./flask/app:/app/app
-      - ./data-log/:/app/app/data-log/
+      - ./data-log/:/app/app/website/data-log
     expose:
       - 8080
 
