@@ -6,6 +6,9 @@ Containers for:
 - Nginx reverse proxy uWSGI to port 80
 - python 3.8.6 reading rpi I2c BME280 sensor and logging it 
 
+Fritzing circut diag image credit Matt Hawkins (probably)
+Info about connecting the sensor to I2c bus https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-pressure-sensor-in-python
+
 **TODO**
  - Add detection for sensor / no sensor / fake sensor for testing (if you dont have a sensor comment out the Docker file run of log.py and a dummy log)
  - Remove or use the api blueprint I was developing for something else
