@@ -1,5 +1,6 @@
 # Weather-Report
-A followup project of https://github.com/Dragon8oy/temp-report using a Rapberry pi and BME280 sensor to monitor temperature, Humidity and barometric pressure, chart it on a flask based website
+A followup project of https://github.com/Dragon8oy/temp-report using a Rapberry pi and BME280 sensor to monitor temperature, Humidity and barometric pressure, chart it on a flask based website 
+
 Containers for:
 - python 3.8.6 flask website using uWSGI on port 8080
 - Nginx reverse proxy uWSGI to port 80
