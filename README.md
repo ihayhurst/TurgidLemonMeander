@@ -7,6 +7,7 @@ Containers for:
 - python 3.8.6 reading rpi I2c BME280 sensor and logging it 
 
 **TODO**
+ - Add detection for sensor / no sensor / fake sensor for testing (if you dont have a sensor comment out the Docker file run of log.py and a dummy log)
  - Remove or use the api blueprint I was developing for something else
  - Report via email if specific conditions are met.
  - Respond automaticaly to email requests for data 
