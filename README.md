@@ -9,10 +9,11 @@ Containers:
 Fritzing circut diag image credit Matt Hawkins (probably)
 
 ## Getting started
-As well as the fritzing diagram Matt Hawkins article has useful instructions about enabling the i2c system 
-Info about connecting the sensor to I2c bus https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-pressure-sensor-in-python
+ - Connect the sensor and enable the I2C bus
+As well as the fritzing diagram Matt Hawkins' article has useful instructions about enabling the i2c system 
+and connecting the sensor to I2c bus https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-pressure-sensor-in-python
 
-Install docker and docker-compose on you pi here is a straghtforward guide: https://withblue.ink/2019/07/13/yes-you-can-run-docker-on-raspbian.html
+ - Install docker and docker-compose on you pi here is a straghtforward guide: https://withblue.ink/2019/07/13/yes-you-can-run-docker-on-raspbian.html
 but essentially I did
 ```
 sudo su -
@@ -27,7 +28,7 @@ Additionaly I added the pi user to the docker group to enable a non-root user to
 ```sudo usermod -aG docker pi```
 restart the session or do ```newgrp docker``` (Remember this or you will still get 'permission denied')
 
-Clone this repo.
+ - Clone this repo.
 cd into it,
 if you were to just ```docker-compose up -d``` (it will ignore the image tag and pull the source images for the individual docker containers)
 Now my pi3 took 4 hours to build the flask (python container with matplotlib, numpy and scipy)
