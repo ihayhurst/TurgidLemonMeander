@@ -12,6 +12,7 @@ Fritzing circut diag image credit: Matt Hawkins (probably)
  - Connect the sensor and enable the I2C bus.
 As well as the fritzing diagram Matt Hawkins' article has useful instructions about enabling the i2c system 
 and connecting the sensor to I2c bus https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-pressure-sensor-in-python
+Although we're using the BME280 python module from Richard Hull https://pypi.org/project/RPi.bme280/ who also has some fine instructions.
 
  - Install docker and docker-compose on you pi. Here is a straghtforward guide: https://withblue.ink/2019/07/13/yes-you-can-run-docker-on-raspbian.html
 but essentially I did:
