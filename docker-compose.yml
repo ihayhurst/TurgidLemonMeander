@@ -2,6 +2,7 @@
 services:
 
   flask:
+    image: "ihayhurst/tlmweather:latest"
     build: ./flask
     container_name: flask
     restart: always
