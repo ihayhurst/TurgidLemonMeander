@@ -6,15 +6,15 @@ Containers:
 - nginx: Nginx reverse proxy uWSGI 8080 to port 80
 - log: python 3.8.6 reading rpi I2c BME280 sensor and logging it
 
-Fritzing circut diag image credit Matt Hawkins (probably)
+Fritzing circut diag image credit: Matt Hawkins (probably)
 
 ## Getting started
- - Connect the sensor and enable the I2C bus
+ - Connect the sensor and enable the I2C bus.
 As well as the fritzing diagram Matt Hawkins' article has useful instructions about enabling the i2c system 
 and connecting the sensor to I2c bus https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-pressure-sensor-in-python
 
- - Install docker and docker-compose on you pi here is a straghtforward guide: https://withblue.ink/2019/07/13/yes-you-can-run-docker-on-raspbian.html
-but essentially I did
+ - Install docker and docker-compose on you pi. Here is a straghtforward guide: https://withblue.ink/2019/07/13/yes-you-can-run-docker-on-raspbian.html
+but essentially I did:
 ```
 sudo su -
 curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -
