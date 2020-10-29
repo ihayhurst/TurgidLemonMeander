@@ -36,7 +36,7 @@ by starting with
 ``` docker-compose pull```
 will fetch my built flask image,
 
-the other containwes built in minutes so ```docker compose up -d `` will build them bfore starting
+the other containers build in minutes so ```docker compose up -d `` will build them bfore starting
 
 the rpi-gpio image mounts the /dev/ic2 system into the container so if you havent got the sensor working the stack won't start 
 (I aim to fix this and at least let the stack start if the device isn't there and work on the code using the frozen copy of an old log)
