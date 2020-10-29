@@ -5,7 +5,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
-from scipy.interpolate import make_interp_spline
+from scipy.interpolate import UnivariateSpline
 from flask import Blueprint
 
 
@@ -42,9 +42,13 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
     x2 = mdates.date2num(x)
     x_sm = np.array(x2)
     x_smooth = np.linspace(x_sm.min(), x_sm.max(), 200)
-    spl = make_interp_spline(x2, y, k=3)
-    spl_h = make_interp_spline(x2, h, k=3)
-    spl_p = make_interp_spline(x2, p, k=3)
+    spl = UnivariateSpline(x2, y, k=3)
+    spl_h = UnivariateSpline(x2, h, k=3)
+    spl_p = UnivariateSpline(x2, p, k=3)
+    # If you want to see more wibble in your lines
+    # spl.set_smoothing_factor(0.5)
+    # spl_h.set_smoothing_factor(0.5)
+    # spl_p.set_smoothing_factor(0.5)
     y_smooth = spl(x_smooth)
     h_smooth = spl_h(x_smooth)
     p_smooth = spl_p(x_smooth)
