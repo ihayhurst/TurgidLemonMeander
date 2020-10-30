@@ -44,12 +44,8 @@ the rpi-gpio image mounts the /dev/ic2 system into the container so if you haven
 (I aim to fix this and at least let the stack start if the device isn't there and work on the code using the frozen copy of an old log)
 
 
-**TODO**
- - Add detection for sensor / no sensor / fake sensor for testing (if you dont have a sensor comment out the Docker file run of log.py and a dummy log)
- - Remove or use the api blueprint (moa) I was developing for something else
- - Reenable the config.py (disabled as the logging moved into another container)
- - Report via email if specific conditions are met.
- - Respond automaticaly to email requests for data 
+## To-Do:
+ - See project [plans](https://github.com/ihayhurst/TurgidLemonMeander/projects/1)
 
 ![alt text](https://ihayhurst.github.io/TurgidLemonMeander/graph.png)
 
