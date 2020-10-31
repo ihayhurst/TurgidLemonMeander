@@ -26,7 +26,7 @@ def website_home():
 
     graphImageData = graph.generateGraph(region, "Conservatory")
     graphImageData = graphImageData.decode("utf-8")
-    title = "Pi weather report"
+    title = f"Pi weather report for {result['region']} Hours"
     return render_template(
         "index.html",
         title=title,
