@@ -1,18 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+    <div class="graph">
       <img src="data:image/png;base64, {{ graphImageData }}" alt="Temperature Graph" height="600" width="1000">
 
-
-      <form action = "/" method = "POST">
-         <p>Text field <input type = "text" name = "Syngenta_email" /></p>
-         <input type="radio" name="region" value="2"> 2 Hours <br/>
-         <input type="radio" name="region" value="4"> 4 Hours <br/>
-         <input type="radio" name="region" value="24" checked> 24 Hours <br/>
-         <input type="radio" name="region" value="48"> 48 Hours <br/>
-         <input type="radio" name="region" value="72"> 72 Hours <br/>
-         <input type="radio" name="region" value="168"> 1 Week<br/>
-         <p><input type = "submit" value = "Redraw" /></p>
-      </form>
+      <div class="graph-controls">
+        <form action = "/" method = "POST">
+          <p>Text field <input type = "text" name = "date_range" /></p>
+          <input type="radio" name="region" value="2"> 2 Hours <br/>
+          <input type="radio" name="region" value="4"> 4 Hours <br/>
+          <input type="radio" name="region" value="24"> 24 Hours <br/>
+          <input type="radio" name="region" value="48"> 48 Hours <br/>
+          <input type="radio" name="region" value="72"> 72 Hours <br/>
+          <input type="radio" name="region" value="168"> 1 Week<br/>
+          <p><input type = "submit" value = "Redraw" /></p>
+        </form>
+      </div>
+    </div>
 {% endblock %}
