@@ -7,17 +7,23 @@ import matplotlib.dates as mdates
 import numpy as np
 from scipy.interpolate import UnivariateSpline
 from flask import Blueprint
+from flask import current_app as app
 
 
 website = Blueprint("website", __name__)
-# from .log import config
+## TODO: write a proper function to get what we need from the config
+def getGlobals():
+    with app.app_context():
+        area_name = app.config["AREA_NAME"]
+    return area_name
+
 
 mpl.use("agg")
 DT_FORMAT = "%Y/%m/%d-%H:%M"  # format used on the cli
-# LOG_DT_FORMAT = config.log_date_format  # in config.py to match the format in the log file
-LOG_DT_FORMAT = "%Y-%m-%d %H:%M:%S"
-# area_name = config.area_name
-area_name = "Conservatory"
+
+# import from config
+# LOG_DATE_FORMAT  # in config.py to match the format in the log file
+LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))  # refers to application_top
 APP_STATIC = os.path.join(APP_ROOT, "static")
 
@@ -83,7 +89,15 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
     ax.plot(x_smooth_dt, y_smooth, color=temperature_color, linewidth=1)
     hh.plot(x_smooth_dt, h_smooth, color=humidity_color, linewidth=1)
     pp.plot(x_smooth_dt, p_smooth, color=pressure_color, linewidth=1)
-    plt.title(str(area_name) + " Temperature, Humidity and Pressure logged by Pi")
+    ax.set_ylim([-10, 35])
+    ax.axhline(y=0, color="purple", linestyle="--", alpha=0.3)
+    pp.set_ylim([940, 1053])
+    pp.axhline(y=1009.144, color="tab:blue", linestyle="--", alpha=0.3)
+    pp.axhline(y=1022.689, color="tab:blue", linestyle="--", alpha=0.3)
+    hh.set_ylim([0, 100])
+    ## TODO: blergh just a test of a get config app_context
+    gareaName = getGlobals()
+    plt.title(f"{gareaName} Temperature, Humidity and Pressure logged by Pi")
 
     if kwargs.get("text"):
         pic_IObytes = io.BytesIO()
@@ -138,7 +152,7 @@ def readValues(*args, **kwargs):
             data = split(" ", line)
             temp, humidity, pressure = float(data[2]), float(data[3]), float(data[4])
             dt = f"{data[0]} {data[1]}"
-            dt = date_to_dt(dt, LOG_DT_FORMAT)
+            dt = date_to_dt(dt, LOG_DATE_FORMAT)
             if tailmode:
                 x.append(dt)
                 y.append(temp)
