@@ -47,6 +47,6 @@ the rpi-gpio image mounts the /dev/ic2 system into the container so if you haven
 ## To-Do:
  - See project [plans](https://github.com/ihayhurst/TurgidLemonMeander/projects/1)
 
-![alt text](https://ihayhurst.github.io/TurgidLemonMeander/graph.png)
+![Example output](https://github.com/ihayhurst/TurgidLemonMeander/docs/graph.png)
 
-![alt_text](https://ihayhurst.github.io/TurgidLemonMeander/BMP280-fritzing.png)
+![Circuit diagram](https://github.com/ihayhurst/TurgidLemonMeander/docs/BMP280-fritzing.png)
