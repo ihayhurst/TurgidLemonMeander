@@ -1,0 +1,92 @@
+header {
+background-color:#2B2B2B;
+height:35px;
+width:100%;
+opacity:.9;
+margin-bottom:10px;
+}
+
+html,body {
+font-family:Lato, sans-serif;
+background-color:#38373a;
+color:#FFF;
+}
+
+.tableborder {
+border:1px solid #000;
+border-collapse:collapse;
+}
+
+th,td {
+padding:10px;
+}
+
+.menu {
+float:left;
+margin-top:8px;
+}
+
+.menu li {
+display:inline;
+}
+
+.menu li + li {
+margin-left:15px;
+}
+
+.menu li a {
+color:orange;
+text-decoration:none;
+}
+
+.menu li a:hover {
+background-color:#666;
+}
+
+input[type=button],input[type=submit],input[type=reset] .form-submit-button {
+display:inline-block;
+font-size:12px;
+cursor:pointer;
+text-align:center;
+text-decoration:none;
+opacity:.6;
+transition:.3s;
+color:#fff;
+background-color:orange;
+border:none;
+border-radius:15px;
+box-shadow:0 2px #999;
+padding:5px;
+}
+
+input[type=submit]:hover {
+opacity:1;
+background-color:#3e8e41;
+}
+
+input[type=submit]:active {
+background-color:#3e8e41;
+box-shadow:0 1px #666;
+transform:translateY(2px);
+}
+
+.command-text {
+white-space:pre-wrap;
+font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
+}
+
+.graph-controls {
+float:left;
+clear:none;
+margin:8px 8px 5px 5px;
+}
+
+.graph {
+margin-left:auto;
+margin-right:auto;
+width: 90%;
+}
+
+::selection,::-moz-selection {
+background:#4ace4f;
+}

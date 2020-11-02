@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="graph">
+      <h4>{{ title}}</h4>
+      <img src="data:image/png;base64, {{ graphImageData }}" alt="Temperature Graph" height="600" width="1000">
+
+      <div class="graph-controls">
+        <form action = "/" method = "POST">
+          <p>Text field <input type = "text" name = "date_range" /></p>
+          <input type="radio" name="region" value="2"> 2 Hours <br/>
+          <input type="radio" name="region" value="4"> 4 Hours <br/>
+          <input type="radio" name="region" value="24"> 24 Hours <br/>
+          <input type="radio" name="region" value="48"> 48 Hours <br/>
+          <input type="radio" name="region" value="72"> 72 Hours <br/>
+          <input type="radio" name="region" value="168"> 1 Week<br/>
+          <p><input type = "submit" value = "Redraw" /></p>
+        </form>
+      </div>
+    </div>
+{% endblock %}
