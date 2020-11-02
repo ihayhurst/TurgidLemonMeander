@@ -1,17 +1,26 @@
 # -*- coding: utf-8 -*-
-import sys, os, argparse, datetime, base64, io
+import sys
+import os
+import argparse
+import datetime
+import base64
+import io
 from re import split
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
 from scipy.interpolate import UnivariateSpline
+
 from flask import Blueprint
 from flask import current_app as app
 
 
 website = Blueprint("website", __name__)
-## TODO: write a proper function to get what we need from the config
+# TODO: write a proper function to get what we need from the config
+
+
 def getGlobals():
     with app.app_context():
         area_name = app.config["AREA_NAME"]
@@ -95,7 +104,7 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
     pp.axhline(y=1009.144, color="tab:blue", linestyle="--", alpha=0.3)
     pp.axhline(y=1022.689, color="tab:blue", linestyle="--", alpha=0.3)
     hh.set_ylim([0, 100])
-    ## TODO: blergh just a test of a get config app_context
+    # TODO: blergh just a test of a get config app_context
     gareaName = getGlobals()
     plt.title(f"{gareaName} Temperature, Humidity and Pressure logged by Pi")
 
@@ -229,29 +238,26 @@ def dt_to_date(dateasdt, FORMAT):
 def main(args=None):
     opt = cmd_args(args)
     kwargs = {}
+    area_name = ""
 
     if opt.dur and opt.start and opt.end:  # Assume start and range ignore end
-        print("All three madness")  # Debug
         print("Duration", opt.dur)
         duration = parse_duration(opt.dur)
         opt.end_dt = date_to_dt(opt.start, DT_FORMAT) + duration
         opt.end = opt.end_dt.strftime(DT_FORMAT)
 
     if opt.dur and opt.start and not opt.end:  # Start and range
-        print("Start date and duration")  # Debug
         print("Duration", opt.dur)
         duration = parse_duration(opt.dur)
         opt.end_dt = date_to_dt(opt.start, DT_FORMAT) + duration
         opt.end = opt.end_dt.strftime(DT_FORMAT)
 
     if opt.dur and not opt.start and opt.end:  # Range before enddate
-        print("End date and duration")  # Debug
         duration = parse_duration(opt.dur)
         opt.start_dt = date_to_dt(opt.end, DT_FORMAT) - duration
         opt.start = opt.start_dt.strftime(DT_FORMAT)
 
     if opt.dur and not opt.start and not opt.end:  # tailmode with range
-        print("End of log back by duratiion")  # Debug
         duration = parse_duration(opt.dur)
         opt.end_dt = datetime.datetime.now()
         opt.end = dt_to_date(opt.end_dt, DT_FORMAT)
@@ -259,7 +265,6 @@ def main(args=None):
         opt.start = opt.start_dt.strftime(DT_FORMAT)
 
     if not opt.dur and opt.start and opt.end:  # Date range
-        print("Start date and end date")  # Debug
         if date_to_dt(opt.start, DT_FORMAT) > date_to_dt(
             opt.end, DT_FORMAT
         ):  # End before start so swap
@@ -268,19 +273,16 @@ def main(args=None):
     if (
         not opt.dur and opt.start and not opt.end
     ):  # Start Date only - from start date to end
-        print("Start Date to end of log ")  # Debug
         opt.end_dt = datetime.datetime.now()
         opt.end = opt.end_dt.strftime(DT_FORMAT)
 
     if (
         not opt.dur and not opt.start and opt.end
     ):  # End Date only - from end date to start
-        print("End date back to the dawn of time (or the log at least) ")  # Debug
         opt.start_dt = datetime.date(1970, 1, 1)
         opt.start = opt.start_dt.strftime(DT_FORMAT)
 
     if opt.lines is not None:  # tailmode with lines
-        print("tail back number of lines")  # Debug
         kwargs = {"tailmode": True, "lines": opt.lines, **kwargs}
 
     if (
