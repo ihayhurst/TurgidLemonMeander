@@ -1,6 +1,7 @@
 import os
-from flask import render_template, Blueprint, current_app, request
+from flask import render_template, Blueprint, request
 from flask import __version__ as __flask_version__
+from flask import current_app
 from app.website import graph
 
 website = Blueprint(
@@ -18,15 +19,18 @@ def website_home():
     if request.method == "POST":
         result = request.form
         # 3600 sec in hour / delay interval 600
-        region = int(result["region"]) * 6
+        interval = int(result["region"])
+        region = interval * 6
         lookup = "wibble"
     else:
-        region = 6 * 24
+        interval = 24
+        region = interval * 6
         lookup = "wibble"
+        
 
     graphImageData = graph.generateGraph(region, "Conservatory")
     graphImageData = graphImageData.decode("utf-8")
-    title = f"Pi weather report for {result['region']} Hours"
+    title = f"Pi weather report for {interval} Hours"
     return render_template(
         "index.html",
         title=title,
