@@ -18,6 +18,8 @@ def website_home():
 
     if request.method == "POST":
         result = request.form
+        for key, value in result.items():
+            print("received", key, "with value", value)
         # 3600 sec in hour / delay interval 600
         interval = int(result["region"])
         region = interval * 6
