@@ -8,6 +8,8 @@ class Config(object):
     AREA_NAME ='Conservatory'
     PRESSURE_MIN = 940
     PRESSURE_MAX = 1053
+    TEMP_MAX = 40
+    TEMP_MIN = -10
 
 class Production(Config):
     SECRET_KEY = 'newexternalsecret'
