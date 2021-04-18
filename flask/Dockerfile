@@ -1,5 +1,5 @@
 # Dockerfile
-FROM python:3.8.6-slim-buster as base
+FROM python:3.9-slim-buster as base
 RUN apt update && apt install --no-install-recommends  -y build-essential python3-dev \
     libopenblas-base liblapack3 libatlas-base-dev gfortran zlib1g-dev libjpeg-dev \
     libpcre3 libpcre3-dev
