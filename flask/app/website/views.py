@@ -29,8 +29,8 @@ def website_home():
         region = interval * 6
         lookup = "wibble"
         
-
-    graphImageData = graph.generateGraph(region, "Conservatory")
+    area_name = current_app.config['AREA_NAME']
+    graphImageData = graph.generateGraph(region, area_name)
     graphImageData = graphImageData.decode("utf-8")
     templateData = {
         'title':  f"Pi weather report for {interval} Hours",
