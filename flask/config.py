@@ -1,4 +1,5 @@
-SECTRT_KEY = "popacatapetal"
+# Defaults overriden by instance/flask.cfg
+SECTRT_KEY = "notsecretkey"
 
 class Config(object):
     #delay: Logging intervalin seconds 600 is 10 minutes
