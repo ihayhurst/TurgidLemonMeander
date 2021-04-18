@@ -1,5 +1,6 @@
 # Weather-Report
-A followup project of https://github.com/Dragon8oy/temp-report using a Rapberry pi and BME280 sensor to monitor temperature, Humidity and barometric pressure, chart it on a flask based website. Using Docker enables us to scrap the messy install script with numerous tmux sessions (sorry Dragon8oy) and start the logging in a container that starts with the system
+A follow-up project of [temp-report](https://github.com/stuarthayhurst/temp-report), using a Raspberry Pi and BME280 sensor to monitor temperature, humidity and barometric pressure, then graph it on a flask based website.
+ - Using Docker enables us to scrap the messy install script with numerous tmux sessions, and start the logging in a container that starts with the system
 
 Containers:
 - flask: python 3.8.6 flask website using uWSGI on port 8080
