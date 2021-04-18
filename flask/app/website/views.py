@@ -32,14 +32,12 @@ def website_home():
 
     graphImageData = graph.generateGraph(region, "Conservatory")
     graphImageData = graphImageData.decode("utf-8")
-    title = f"Pi weather report for {interval} Hours"
-    return render_template(
-        "index.html",
-        title=title,
-        result="wibble",
-        lookup=lookup,
-        graphImageData=graphImageData,
-    )
+    templateData = {
+        'title':  f"Pi weather report for {interval} Hours",
+        'lookup': lookup,
+        'graphImageData': graphImageData
+    }
+    return render_template( "index.html", **templateData)
 
 
 @website.route("/about")
