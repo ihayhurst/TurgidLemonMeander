@@ -14,18 +14,6 @@
    viewBox="0 0 67.733332 67.733335"
    height="256"
    width="256">
-  <g
-     id="g933"
-     transform="translate(0,79.375017)">
-    <path
-       id="path929"
-       style="display:inline;fill:#666666;fill-opacity:1;stroke-width:0.0282222;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers"
-       d="M 5.705669,8.6769939 C 2.544985,8.6769939 0,11.221981 0,14.382668 v 13.646706 14.514345 13.64678 c 0,3.16071 2.544985,5.7057 5.705669,5.7057 h 56.321993 c 3.16069,0 5.70567,-2.54499 5.70567,-5.7057 V 42.543719 28.029374 14.382668 c 0,-3.160687 -2.54498,-5.7056741 -5.70567,-5.7056741 z" />
-    <path
-       id="rect1168"
-       style="display:inline;fill:#b3b3b3;fill-opacity:1;stroke-width:0.0282222;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers"
-       d="M 5.705669,6.5603271 C 2.544985,6.5603271 0,9.1053132 0,12.266 v 13.646706 14.514345 13.64678 c 0,3.16071 2.544985,5.7057 5.705669,5.7057 h 56.321993 c 3.16069,0 5.70567,-2.54499 5.70567,-5.7057 V 40.427051 25.912706 12.266 c 0,-3.1606868 -2.54498,-5.7056729 -5.70567,-5.7056729 z" />
-  </g>
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -39,9 +27,9 @@
      inkscape:document-rotation="0"
      inkscape:current-layer="svg8"
      inkscape:document-units="px"
-     inkscape:cy="165.08051"
-     inkscape:cx="119.56906"
-     inkscape:zoom="1.4142136"
+     inkscape:cy="191.52931"
+     inkscape:cx="182.86217"
+     inkscape:zoom="1"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0"
      borderopacity="1.0"

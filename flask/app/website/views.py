@@ -29,17 +29,15 @@ def website_home():
         region = interval * 6
         lookup = "wibble"
         
-
-    graphImageData = graph.generateGraph(region, "Conservatory")
+    area_name = current_app.config['AREA_NAME']
+    graphImageData = graph.generateGraph(region, area_name)
     graphImageData = graphImageData.decode("utf-8")
-    title = f"Pi weather report for {interval} Hours"
-    return render_template(
-        "index.html",
-        title=title,
-        result="wibble",
-        lookup=lookup,
-        graphImageData=graphImageData,
-    )
+    templateData = {
+        'title':  f"Pi weather report for {interval} Hours",
+        'lookup': lookup,
+        'graphImageData': graphImageData
+    }
+    return render_template( "index.html", **templateData)
 
 
 @website.route("/about")
