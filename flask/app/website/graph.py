@@ -24,6 +24,7 @@ website = Blueprint("website", __name__)
 def getGlobals():
     with app.app_context():
         area_name = app.config["AREA_NAME"]
+        pressure_max = app.config["PRESSURE_MAX"]
     return area_name
 
 
