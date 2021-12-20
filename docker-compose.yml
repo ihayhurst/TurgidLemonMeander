@@ -1,19 +1,17 @@
+version: '3'
 
 services:
-
   flask:
-    image: "ihayhurst/tlmweather:latest"
+    image: 'ihayhurst/tlmweather:latest'
     build: ./flask
     container_name: flask
     restart: always
-#    depends_on:
-#      - redis
     environment:
       - FLASK_ENV=development
       - APP_NAME=WeatherReport
     volumes:
-      - ./flask:/app
-      - ./data-log/:/app/app/website/data-log
+      - './flask:/app'
+      - './data-log/:/app/app/website/data-log'
     expose:
       - 8080
 
@@ -21,20 +19,17 @@ services:
     build: ./rpi-gpio
     container_name: rpi-gpio
     volumes:
-      - ./data-log/:/data-log/
+      - './data-log/:/data-log/'
     devices:
-      - "/dev/i2c-1:/dev/i2c-1"
-    restart: always 
-      
+      - '/dev/i2c-1:/dev/i2c-1'
+    restart: always
+
   nginx:
     build: ./nginx
     container_name: nginx
     restart: always
     ports:
-      - "80:80"
-
-#  redis:
-#    image: redis
+      - '80:80'
 
 volumes:
-    app: {}
+  app: {}
