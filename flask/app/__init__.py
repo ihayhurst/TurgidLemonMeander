@@ -13,6 +13,5 @@ def create_app():
 
     with app.app_context():
         app.register_blueprint(website, url_prefix="/")
-        app.register_blueprint(moa, url_prefix="/moa")
         # Initialise Globals
     return app
