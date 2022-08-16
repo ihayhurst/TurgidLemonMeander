@@ -1,6 +1,5 @@
 from flask import Flask
 from .website.views import website
-from .moa.views import moa
 
 # from extensidbons import *
 # Set Globals
