@@ -18,14 +18,16 @@ from flask import current_app as app
 
 
 website = Blueprint("website", __name__)
-# TODO: write a proper function to get what we need from the config
 
 
-def getGlobals():
+def get_config(configKey: str =None) ->str:
+    """
+    given a config_key fetch the value from the app config
+    return value
+    """
     with app.app_context():
-        area_name = app.config["AREA_NAME"]
-        pressure_max = app.config["PRESSURE_MAX"]
-    return area_name
+        configItem = app.config[configKey]
+    return configItem
 
 
 mpl.use("agg")
@@ -55,6 +57,10 @@ def generateGraph(reading_count, area_name):
 
 
 def drawGraph(x, y, h, p, area_name, **kwargs):
+    if area_name is None:
+        area_name = get_config("AREA_NAME")
+    temp_max = get_config("TEMP_MAX")
+    temp_min = get_config("TEMP_MIN")
     x2 = mdates.date2num(x)
     x_sm = np.array(x2)
     x_smooth = np.linspace(x_sm.min(), x_sm.max(), 200)
@@ -99,15 +105,13 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
     ax.plot(x_smooth_dt, y_smooth, color=temperature_color, linewidth=1)
     hh.plot(x_smooth_dt, h_smooth, color=humidity_color, linewidth=1)
     pp.plot(x_smooth_dt, p_smooth, color=pressure_color, linewidth=1)
-    ax.set_ylim([-10, 35])
+    ax.set_ylim([temp_min, temp_max])
     ax.axhline(y=0, color="purple", linestyle="--", alpha=0.3)
     pp.set_ylim([940, 1053])
     pp.axhline(y=1009.144, color="tab:blue", linestyle="--", alpha=0.3)
     pp.axhline(y=1022.689, color="tab:blue", linestyle="--", alpha=0.3)
     hh.set_ylim([0, 100])
-    # TODO: blergh just a test of a get config app_context
-    gareaName = getGlobals()
-    plt.title(f"{gareaName} Temperature, Humidity and Pressure logged by Pi")
+    plt.title(f"{area_name} Temperature, Humidity and Pressure logged by Pi")
 
     if kwargs.get("text"):
         pic_IObytes = io.BytesIO()
