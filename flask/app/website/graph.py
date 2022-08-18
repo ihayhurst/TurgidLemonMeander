@@ -6,7 +6,6 @@ import datetime
 import base64
 import io
 from re import split
-os.environ[ 'MPLCONFIGDIR' ] = '/tmp/'
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates

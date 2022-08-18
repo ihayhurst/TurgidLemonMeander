@@ -1,6 +1,7 @@
 version: '3'
 
 services:
+
   flask:
     image: 'ihayhurst/tlmweather:latest'
     build: ./flask
@@ -9,6 +10,7 @@ services:
     environment:
       - FLASK_ENV=development
       - APP_NAME=WeatherReport
+      - TZ=Europe/London
     volumes:
       - './flask:/app'
       - './data-log/:/app/app/website/data-log'
