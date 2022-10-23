@@ -60,6 +60,13 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
         area_name = get_config("AREA_NAME")
     temp_max = get_config("TEMP_MAX")
     temp_min = get_config("TEMP_MIN")
+    pressure_min = get_config("PRESSURE_MIN")
+    pressure_max = get_config("PRESSURE_MAX")
+    altitude = get_config("ALTITUDE")
+    alt_factor = 0.12677457 # hPa reduction per meter above sealevel
+    alt_corr =(altitude * alt_factor)
+    # correct every pressure in list for altitude
+    p = [x + alt_corr for x in p]
     x2 = mdates.date2num(x)
     x_sm = np.array(x2)
     x_smooth = np.linspace(x_sm.min(), x_sm.max(), 200)
@@ -106,9 +113,12 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
     pp.plot(x_smooth_dt, p_smooth, color=pressure_color, linewidth=1)
     ax.set_ylim([temp_min, temp_max])
     ax.axhline(y=0, color="purple", linestyle="--", alpha=0.3)
-    pp.set_ylim([940, 1053])
-    pp.axhline(y=1009.144, color="tab:blue", linestyle="--", alpha=0.3)
-    pp.axhline(y=1022.689, color="tab:blue", linestyle="--", alpha=0.3)
+
+    pp.set_ylim([pressure_min, pressure_max])
+    # plot boundaries of normal pressure
+    pp.axhline(y=1009.689, color="tab:blue", linestyle="--", alpha=0.3)
+    # mean pressure pp.axhline(y=1013, color="tab:blue", linestyle="--", alpha=0.3)
+    pp.axhline(y=1022.144, color="tab:blue", linestyle="--", alpha=0.3)
     hh.set_ylim([0, 100])
     plt.title(f"{area_name} Temperature, Humidity and Pressure logged by Pi")
 
