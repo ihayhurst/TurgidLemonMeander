@@ -2,6 +2,7 @@ aniso8601
 click
 cycler
 Flask
+Flask-RESTful
 fonttools
 importlib-metadata
 itsdangerous

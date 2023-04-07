@@ -1,5 +1,5 @@
 # Dockerfile
-FROM python:3.10-slim-bullseye as base
+FROM python:3.11-slim-bullseye as base
 ENV PIP_EXTRA_INDEX_URL=https://www.piwheels.org/simple
 RUN apt update && apt install --no-install-recommends  -y build-essential python3-dev \
     libopenblas-base liblapack3 libatlas-base-dev gfortran zlib1g-dev libjpeg-dev \
