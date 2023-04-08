@@ -3,9 +3,9 @@ A follow-up project of [temp-report](https://github.com/stuarthayhurst/temp-repo
  - Using Docker enables us to scrap the messy install script with numerous tmux sessions, and start the logging in a container that starts with the system
 
 Containers:
- - flask: python 3.8.6 flask website using uWSGI on port 8080
+ - flask: python 3.11 flask website using uWSGI on port 8080
  - nginx: Nginx reverse proxy uWSGI 8080 to port 80
- - log: python 3.8.6 reading rpi I2c BME280 sensor and logging it
+ - log: python  reading rpi I2c BME280 sensor and logging it
 
 Fritzing circut diag image credit: Matt Hawkins (probably)
 
