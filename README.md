@@ -21,11 +21,10 @@ Fritzing circut diag image credit: Matt Hawkins (probably)
 ```
   sudo su -
   curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -
-  echo "deb [arch=armhf] https://download.docker.com/linux/raspbian buster stable" >>/etc/apt/sources.list.d/docker.list
+  echo "deb [arch=armhf] https://download.docker.com/linux/raspbian bookworm stable" >>/etc/apt/sources.list.d/docker.list
   apt update
   apt install -y --no-install-recommends docker-ce cgroupfs-mount
-  systemctl enable docker.service
-  systemctl start docker.service
+  systemctl enable docker.service --now
 ```
  - Additionaly I added the pi user to the docker group to enable a non-root user to run docker: `sudo usermod -aG docker pi`
  - Restart the session, or do: `newgrp docker` (Remember this or you will still get 'permission denied')
@@ -35,7 +34,7 @@ Fritzing circut diag image credit: Matt Hawkins (probably)
  - `cd TurgidLemonMeander`
  - Fetch the containers: `docker-compose pull` (The Pi 3 can take 4 hours to build it otherwise)
  - Start the containers: `docker-compose up -d` 
- - Also note, if the sensor isn't working, the stack won't start (/dev/ic2 is required)
+ - Also note, if the sensor isn't working, the stack won't start (/dev/i2c is required)
    - I aim to fix this, at least let the stack start if the device is missing, and use an old copy of the log
 
 ## To-Do:

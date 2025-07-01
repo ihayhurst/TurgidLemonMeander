@@ -3,6 +3,13 @@
 {% block content %}
     <div class="graph">
       <h4>{{ title}}</h4>
+      <h5>Current Readings:
+      <ul>
+        {% for key, value in currentReadings.items() %}
+	<li>{{ key }}: {{ value|e }}</li>
+        {% endfor %}
+      </ul></h5>
+      <h5>Current Pi Temp: {{currentPiTemp }}</h5>
       <img src="data:image/png;base64, {{ graphImageData }}" alt="Temperature Graph" height="600" width="1000">
 
       <div class="graph-controls">

@@ -23,6 +23,8 @@ services:
       - './data-log/:/data-log/'
     devices:
       - '/dev/i2c-1:/dev/i2c-1'
+    ports:
+      - '5000:5000'
     restart: always
 
   nginx:

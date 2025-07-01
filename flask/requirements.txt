@@ -21,3 +21,4 @@ six
 uWSGI
 Werkzeug
 zipp
+requests
