@@ -35,7 +35,7 @@ Fritzing circut diag image credit: Matt Hawkins (probably)
  - Fetch the containers: `docker-compose pull` (The Pi 3 can take 4 hours to build it otherwise)
  - Start the containers: `docker-compose up -d` 
  - Also note, if the sensor isn't working, the stack won't start (/dev/i2c is required)
-   - I aim to fix this, at least let the stack start if the device is missing, and use an old copy of the log
+   - set the environment variable DUMMY_SENSOR=True or in the config pi-gpio/config.py DUMMY_SENSOR = True
 
 ## To-Do:
  - See project [plans](https://github.com/ihayhurst/TurgidLemonMeander/projects/1)
