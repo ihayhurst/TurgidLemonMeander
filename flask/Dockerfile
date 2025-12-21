@@ -16,7 +16,8 @@ RUN pip install -v --no-cache-dir --upgrade wheel
 COPY requirements.txt .
 RUN pip install -v --no-cache-dir  -r requirements.txt
 
-FROM python:3.11-slim-bullseye@sha256:5a67c38a7c28ad09d08f4e153280023a2df77189b55af7804d7ceb96fee6a68f
+#FROM python:3.11-slim-bullseye@sha256:5a67c38a7c28ad09d08f4e153280023a2df77189b55af7804d7ceb96fee6a68f
+FROM python:3.11-slim-bullseye
 WORKDIR /app
 COPY --chown=1000:1000 --from=build /home/appuser/venv /home/appuser/venv
 ADD --chown=1000:1000 . /app
