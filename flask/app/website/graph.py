@@ -46,10 +46,10 @@ def generateGraph(reading_count, area_name):
     filename = os.path.join(website.root_path, "data-log/hpt.log")
     if len(open(filename, encoding="utf-8").readlines()) < reading_count:
         print("Not enough lines in logfile, aborting\n")
-        plt.figure()
-        plt.savefig("hpt.png")
-        plt.clf()
-        plt.close("all")
+      # plt.figure()
+      # plt.savefig("hpt.png")
+      # plt.clf()
+      # plt.close("all")
         return
     x, y, h, p = readValues(*args, **kwargs)
     return drawGraph(x, y, h, p, area_name, **kwargs)
@@ -127,6 +127,7 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
         plt.savefig(pic_IObytes, format="png")
         pic_IObytes.seek(0)
         pic_hash = base64.b64encode(pic_IObytes.read())
+        plt.close(fig)
         print("Graph created in base64 encoding")
         return pic_hash
 
