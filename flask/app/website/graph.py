@@ -41,15 +41,12 @@ APP_STATIC = os.path.join(APP_ROOT, "static")
 
 def generateGraph(reading_count, area_name):
     """Wrapper for drawgraph called from """
+
     kwargs = {"tailmode": True, "text": True}
     args = {reading_count}
     filename = os.path.join(website.root_path, "data-log/hpt.log")
     if len(open(filename, encoding="utf-8").readlines()) < reading_count:
         print("Not enough lines in logfile, aborting\n")
-      # plt.figure()
-      # plt.savefig("hpt.png")
-      # plt.clf()
-      # plt.close("all")
         return
     x, y, h, p = readValues(*args, **kwargs)
     return drawGraph(x, y, h, p, area_name, **kwargs)
@@ -73,10 +70,6 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
     spl = UnivariateSpline(x2, y, k=3)
     spl_h = UnivariateSpline(x2, h, k=3)
     spl_p = UnivariateSpline(x2, p, k=3)
-    # If you want to see more wibble in your lines
-    # spl.set_smoothing_factor(0.5)
-    # spl_h.set_smoothing_factor(0.5)
-    # spl_p.set_smoothing_factor(0.5)
     y_smooth = spl(x_smooth)
     h_smooth = spl_h(x_smooth)
     p_smooth = spl_p(x_smooth)
@@ -92,7 +85,6 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
 
     plt.plot([], [])
     x_smooth_dt = mdates.num2date(x_smooth)
-    # ax.xaxis.set_major_formatter(mdates.DateFormatter('%b-%d %H:%M'))
     maFmt = mdates.DateFormatter("%b-%d")
     miFmt = mdates.DateFormatter("%H:%M")
     ax.xaxis.set_major_formatter(maFmt)
