@@ -65,7 +65,7 @@ def get_pi_temp():
     try:
         with open("/sys/class/thermal/thermal_zone0/temp") as f:
             temp_c = int(f.read()) / 1000
-            return f"{temp_c:.1f}'C"
+            return f"{temp_c:.1f}°C"
     except FileNotFoundError:
         return "Unavailable"
 
