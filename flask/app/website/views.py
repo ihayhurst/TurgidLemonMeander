@@ -45,6 +45,15 @@ def website_home():
     return render_template( "index.html", **templateData)
 
 
+website.route("/graph-data")
+def graph_data():
+    hours = int(request.args.get("hours", 24))
+    readings = hours * 6  # 600s logging
+
+    data = prepareGraphData(readings)
+    return jsonify(data)
+
+
 @website.route("/about")
 def website_about():
 

@@ -28,4 +28,12 @@
         </form>
       </div>
     </div>
+    <input type="range" min="1" max="168" value="24" id="hoursSlider">
+	<span id="hoursLabel">24 hours</span>
+
+	<div id="graph"></div>
+
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<script src="{{ url_for('static', filename='graph.js') }}"></script>
+
 {% endblock %}

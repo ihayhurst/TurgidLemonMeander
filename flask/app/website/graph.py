@@ -39,6 +39,22 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))  # refers to application_t
 APP_STATIC = os.path.join(APP_ROOT, "static")
 
 
+def prepareGraphData(reading_count):
+    x, y, h, p = readValues(reading_count, tailmode=True)
+
+    # altitude correction stays server-side
+    altitude = get_config("ALTITUDE")
+    alt_factor = 0.12677457
+    p = [v + altitude * alt_factor for v in p]
+
+    return {
+        "time": [dt.isoformat() for dt in x],
+        "temperature": y,
+        "humidity": h,
+        "pressure": p,
+    }
+
+
 def generateGraph(reading_count, area_name):
     """Wrapper for drawgraph called from """
 
