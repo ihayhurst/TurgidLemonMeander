@@ -16,20 +16,21 @@ website = Blueprint(
 
 @website.route("/", methods=["POST", "GET"])
 def website_home():
-
+    DEFAULT_INTERVAL = 24
     if request.method == "POST":
-        result = request.form
-        for key, value in result.items():
-            print("received", key, "with value", value)
-        # 3600 sec in hour / delay interval 600
-        interval = int(result["region"])
+        raw = request.form.get("region", DEFAULT_INTERVAL)
+        try:
+            interval = int(raw)
+        except (TypeError, ValueError):
+            interval = DEFAULT_INTERVAL
         region = interval * 6
         lookup = "wibble"
     else:
-        interval = 24
-        region = interval * 6
-        lookup = "wibble"
-        
+        interval = DEFAULT_INTERVAL
+
+    region = interval * 6
+    lookup = "wibble"
+
     area_name = current_app.config['AREA_NAME']
     graphImageData = graph.generateGraph(region, area_name)
     graphImageData = graphImageData.decode("utf-8")
