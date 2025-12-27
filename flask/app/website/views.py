@@ -13,9 +13,18 @@ website = Blueprint(
     template_folder="templates",
 )
 
-
-@website.route("/", methods=["POST", "GET"])
+@website.route("/")
 def website_home():
+    area_name = current_app.config['AREA_NAME']
+    templateData = {
+        'title': f"sensor reports for {area_name}",
+        'currentPiTemp': get_pi_temp(),
+        'currentReadings': get_current_bme280_reading()
+    }
+    return render_template("index.html", **templateData)
+
+@website.route("/mpl", methods=["POST", "GET"])
+def website_mpl():
     DEFAULT_INTERVAL = 24
     if request.method == "POST":
         raw = request.form.get("region", DEFAULT_INTERVAL)
@@ -42,7 +51,7 @@ def website_home():
         'currentReadings': get_current_bme280_reading()
 
     }
-    return render_template( "index.html", **templateData)
+    return render_template( "mpl.html", **templateData)
 
 
 @website.route("/graph-data")
@@ -84,6 +93,7 @@ def get_current_air_temp():
 def get_current_bme280_reading():
     try:
         resp = requests.get("http://rpi-gpio:5000/current", timeout=1)
+        #resp = requests.get("http://juniper.local:5000/current", timeout=1)
         resp.raise_for_status()
         print(resp.json())
         return resp.json()
