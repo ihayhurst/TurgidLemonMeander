@@ -78,7 +78,7 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
     altitude = get_config("ALTITUDE")
     alt_factor = 0.12677457 # hPa reduction per meter above sealevel
     alt_corr =(altitude * alt_factor)
-    # correct every pressure in list for altitude
+    # correctevery pressure in list for altitude (to graph sealevel pressure not local)
     p = [x + alt_corr for x in p]
     x2 = mdates.date2num(x)
     x_sm = np.array(x2)
@@ -124,9 +124,9 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
 
     pp.set_ylim([pressure_min, pressure_max])
     # plot boundaries of normal pressure
-    pp.axhline(y=1009.689, color="tab:blue", linestyle="--", alpha=0.3)
+    pp.axhline(y=1010, color="tab:blue", linestyle="--", alpha=0.3)
     # mean pressure pp.axhline(y=1013, color="tab:blue", linestyle="--", alpha=0.3)
-    pp.axhline(y=1022.144, color="tab:blue", linestyle="--", alpha=0.3)
+    pp.axhline(y=1020, color="tab:blue", linestyle="--", alpha=0.3)
     hh.set_ylim([0, 100])
     plt.title(f"{area_name} Temperature, Humidity and Pressure logged by Pi")
 
@@ -151,8 +151,8 @@ def readValues(*args, **kwargs):
     """for key, value in kwargs.items():     #Debug
     print ("%s == %s" %(key, value)) #Debug
     """
-    print("From: ", kwargs.get("from_date"))
-    print("To: ", kwargs.get("to_date"))
+    # print("From: ", kwargs.get("from_date"))
+    # print("To: ", kwargs.get("to_date"))
 
     if kwargs.get("lines") is not None:
         reading_count = kwargs.get("lines")

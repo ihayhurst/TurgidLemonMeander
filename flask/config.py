@@ -7,7 +7,7 @@ class Config(object):
     DELAY = 600
     LOG_DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
     AREA_NAME ='Default Area'
-    ALTITUDE = 0
+    ALTITUDE = 54
     PRESSURE_MIN = 940
     PRESSURE_MAX = 1053
     TEMP_MAX = 40

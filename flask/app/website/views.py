@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import render_template, Blueprint, request
+from flask import render_template, Blueprint, request, jsonify
 from flask import __version__ as __flask_version__
 from flask import current_app
 from app.website import graph
@@ -45,12 +45,12 @@ def website_home():
     return render_template( "index.html", **templateData)
 
 
-website.route("/graph-data")
+@website.route("/graph-data")
 def graph_data():
     hours = int(request.args.get("hours", 24))
     readings = hours * 6  # 600s logging
 
-    data = prepareGraphData(readings)
+    data = graph.prepareGraphData(readings)
     return jsonify(data)
 
 
