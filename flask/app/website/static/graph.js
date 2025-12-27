@@ -43,7 +43,7 @@ async function loadGraph(hours) {
             }
         }
     ];
-
+const isMobile = window.innerWidth < 768;
 const layout = {
   title: "Temperature, Humidity and Pressure",
   margin: { r: 120 },
@@ -61,7 +61,22 @@ const layout = {
 
     // high/low pressure band
     { type: "rect", xref: "paper", x0: 0, x1: 1, yref: "y3", y0: 1010, y1: 1020, fillcolor: "rgba(173, 216, 230, 0.3)", line: { width: 0 } }
-  ]
+  ],
+  height: isMobile ? 420 : 640,   // desktop taller
+  legend: {
+    orientation: "h",
+    x: 0.5,
+    xanchor: "center",
+    y: -0.28,
+    yanchor: "top",
+    font: {
+      size: isMobile ? 10 : 12
+    }
+  },
+  margin: {
+    t: 50,
+    b: isMobile ? 110 : 130   // extra space for legend
+  }
 };
 
 
