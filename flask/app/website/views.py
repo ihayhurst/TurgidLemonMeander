@@ -1,10 +1,12 @@
 import os
 import requests
-from flask import render_template, Blueprint, request
+from flask import render_template, Blueprint, request, jsonify
 from flask import __version__ as __flask_version__
 from flask import current_app
 from app.website import graph
+import datetime
 
+LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 website = Blueprint(
     "website",
     __name__,
@@ -13,9 +15,18 @@ website = Blueprint(
     template_folder="templates",
 )
 
-
-@website.route("/", methods=["POST", "GET"])
+@website.route("/")
 def website_home():
+    area_name = current_app.config['AREA_NAME']
+    templateData = {
+        'title': f"sensor reports for {area_name}",
+        'currentPiTemp': get_pi_temp(),
+        'currentReadings': get_current_bme280_reading()
+    }
+    return render_template("index.html", **templateData)
+
+@website.route("/mpl", methods=["POST", "GET"])
+def website_mpl():
     DEFAULT_INTERVAL = 24
     if request.method == "POST":
         raw = request.form.get("region", DEFAULT_INTERVAL)
@@ -42,7 +53,28 @@ def website_home():
         'currentReadings': get_current_bme280_reading()
 
     }
-    return render_template( "index.html", **templateData)
+    return render_template( "mpl.html", **templateData)
+
+
+@website.route("/graph-data")
+def graph_data():
+    if "start" in request.args and "end" in request.args:
+        start_iso = request.args["start"].replace("Z", "")
+        end_iso   = request.args["end"].replace("Z", "")
+        print(f'{request.args["start"]}')
+
+        start_dt = datetime.datetime.fromisoformat(start_iso)
+        end_dt   = datetime.datetime.fromisoformat(end_iso)
+        start_str =graph.dt_to_date(start_dt, LOG_DATE_FORMAT)
+        end_str   =graph.dt_to_date(end_dt, LOG_DATE_FORMAT)
+
+        print(f"{start_str=},{end_str=}")
+        return jsonify(graph.prepareGraphData_range(start_str, end_str))
+
+    # fallback tailing that last logged data
+    hours = int(request.args.get("hours", 48))
+    reading_count = hours * 6  # or whatever your cadence is
+    return jsonify(graph.prepareGraphData(reading_count))
 
 
 @website.route("/about")
@@ -75,6 +107,7 @@ def get_current_air_temp():
 def get_current_bme280_reading():
     try:
         resp = requests.get("http://rpi-gpio:5000/current", timeout=1)
+        #resp = requests.get("http://juniper.local:5000/current", timeout=1)
         resp.raise_for_status()
         print(resp.json())
         return resp.json()

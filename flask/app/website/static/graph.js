@@ -1,0 +1,146 @@
+let currentEnd = new Date(); // default = now
+let windowHours = 48;
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const slider = document.getElementById("hoursSlider");
+    const label  = document.getElementById("hoursLabel");
+    const prevBtn = document.getElementById("prevDay");
+    const nextBtn = document.getElementById("nextDay");
+
+    // Initialise state FROM slider
+    windowHours = parseInt(slider.value);
+    label.textContent = `${windowHours} hours`;
+
+    // Initial draw
+    drawGraph();
+
+    // Slider changes window width
+    slider.addEventListener("input", () => {
+        windowHours = parseInt(slider.value);
+        label.textContent = `${windowHours} hours`;
+        drawGraph();
+    });
+
+    // Shift back one day
+    prevBtn.onclick = () => {
+        console.log("Prev day clicked");
+        currentEnd = new Date(currentEnd.getTime() - 24 * 3600 * 1000);
+        drawGraph();
+    };
+
+    // Shift forward one day
+    nextBtn.onclick = () => {
+        console.log("Next day clicked");
+        currentEnd = new Date(currentEnd.getTime() + 24 * 3600 * 1000);
+        drawGraph();
+    };
+    slider.addEventListener("input", () => {
+    console.log("Slider moved:", slider.value);
+    windowHours = parseInt(slider.value);
+    label.textContent = `${windowHours} hours`;
+    drawGraph();
+});
+
+});
+
+async function drawGraph() {
+    console.log(
+  "drawGraph window:",
+  windowHours,
+  "hours",
+  "end:",
+  currentEnd.toISOString()
+);
+
+
+    const start = new Date(
+        currentEnd.getTime() - windowHours * 3600 * 1000
+    );
+
+    const startISO = start.toISOString();
+    const endISO   = currentEnd.toISOString();
+    // alternative call slider for last 168 hours
+    //const response = await fetch(
+    //    `/graph-data?hours=${windowHours}`
+    //);
+    const response = await fetch(
+        `/graph-data?start=${startISO}&end=${endISO}`
+    );
+    if (!response.ok) {
+      const text = await response.text();
+      return;
+    }
+
+    const data = await response.json();
+
+    const traces = [
+        {
+            x: data.time,
+            y: data.temperature,
+            name: "Temperature °C",
+            yaxis: "y",
+            type: "scatter",
+            mode: "lines",
+            line: { color: "red", width: 2 }
+        },
+        {
+            x: data.time,
+            y: data.humidity,
+            name: "Humidity %",
+            yaxis: "y2",
+            type: "scatter",
+            mode: "lines",
+            line: { color: "green", width: 2 }
+        },
+        {
+            x: data.time,
+            y: data.pressure,
+            name: "Pressure hPa",
+            yaxis: "y3",
+            type: "scatter",
+            mode: "lines",
+            line: { color: "blue", width: 2 }
+        }
+    ];
+
+    const isMobile = window.innerWidth < 768;
+
+    const layout = {
+        title: "Temperature, Humidity and Pressure",
+
+        yaxis: {
+            title: "Temperature (°C)",
+            range: [-10, 40]
+        },
+        yaxis2: {
+            title: "Humidity (%)",
+            range: [0, 100],
+            overlaying: "y",
+            side: "right"
+        },
+        yaxis3: {
+            title: "Pressure (hPa)",
+            range: [940, 1053],
+            overlaying: "y",
+            side: "right",
+            position: 1.08
+        },
+        shapes: [
+    // freezing point 0°C
+    { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 0, y1: 0, line: { color: "red", dash: "dash", width: 1 } },
+
+    // mean sea-level pressure
+    { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y3", y0: 1013, y1: 1013, line: { color: "blue", dash: "dash", width: 1 } },
+
+    // high/low pressure band
+    { type: "rect", xref: "paper", x0: 0, x1: 1, yref: "y3", y0: 1010, y1: 1020, fillcolor: "rgba(173, 216, 230, 0.3)", line: { width: 0 } }
+  ],
+
+        height: isMobile ? 420 : 640,
+        margin: { t: 50, b: isMobile ? 110 : 130, r: 120 }
+    };
+
+    Plotly.react("graph", traces, layout, { responsive: true });
+}
+

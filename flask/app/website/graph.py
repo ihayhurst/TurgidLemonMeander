@@ -28,8 +28,8 @@ def get_config(configKey: str =None) ->str:
         configItem = app.config[configKey]
     return configItem
 
-
 mpl.use("agg")
+
 DT_FORMAT = "%Y/%m/%d-%H:%M"  # format used on the cli
 
 # import from config
@@ -37,13 +37,83 @@ DT_FORMAT = "%Y/%m/%d-%H:%M"  # format used on the cli
 LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))  # refers to application_top
 APP_STATIC = os.path.join(APP_ROOT, "static")
+_cached_log = None
+_cached_mtime = None
+
+def correct_pressure_for_altitude(p_values):
+    # correct every pressure in list for altitude (to graph sealevel pressure not local)
+    altitude = get_config("ALTITUDE")
+    alt_factor = 0.12677457
+    return [p + altitude * alt_factor for p in p_values]
+
+
+def prepareGraphData(reading_count):
+    x, y, h, p = readValues(reading_count, tailmode=True)
+
+    p = correct_pressure_for_altitude(p)
+
+    return {
+        "time": [dt.isoformat() for dt in x],
+        "temperature": y,
+        "humidity": h,
+        "pressure": p,
+    }
+
+def prepareGraphData_range(start_dt, end_dt):
+    x, y, h, p = readValues(
+        #from_dt=datetime.datetime.fromisoformat(start_dt),
+        from_date = start_dt,
+        #to_dt=datetime.datetime.fromisoformat(end_dt),
+        to_date = end_dt,
+        tailmode=False,
+    )
+    p = correct_pressure_for_altitude(p)
+
+    return {
+        "time": [dt.isoformat() for dt in x],
+        "temperature": y,
+        "humidity": h,
+        "pressure": p,
+    }
+
+def load_log_cached():
+    global _cached_log, _cached_mtime
+    LOG_FILE = os.path.join(website.root_path, "data-log/hpt.log")
+    stat = os.stat(LOG_FILE)
+
+    if _cached_log is None or stat.st_mtime != _cached_mtime:
+        data = []
+        rdata = []
+        with open(LOG_FILE) as f:
+            for line in f:
+                if not line:
+                    continue
+                line = clean_log_line(line)
+                parts = line.split()
+                if len(parts) < 5:
+                    continue
+                try:
+                    dt = date_to_dt(f"{parts[0]} {parts[1]}", LOG_DATE_FORMAT)
+                    t, h, p = map(float, parts[2:5])
+                except ValueError:
+                    continue
+                data.append((dt, t, h, p))
+
+
+        _cached_log = data
+        _cached_mtime = stat.st_mtime
+
+    return _cached_log
+
+def clean_log_line(line):
+    return line.replace("\x00", "").translate({91: None, 93: None}).strip()
 
 
 def generateGraph(reading_count, area_name):
     """Wrapper for drawgraph called from """
 
     kwargs = {"tailmode": True, "text": True}
-    args = {reading_count}
+    args = (reading_count,)
     filename = os.path.join(website.root_path, "data-log/hpt.log")
     if len(open(filename, encoding="utf-8").readlines()) < reading_count:
         print("Not enough lines in logfile, aborting\n")
@@ -59,11 +129,7 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
     temp_min = get_config("TEMP_MIN")
     pressure_min = get_config("PRESSURE_MIN")
     pressure_max = get_config("PRESSURE_MAX")
-    altitude = get_config("ALTITUDE")
-    alt_factor = 0.12677457 # hPa reduction per meter above sealevel
-    alt_corr =(altitude * alt_factor)
-    # correct every pressure in list for altitude
-    p = [x + alt_corr for x in p]
+    p = correct_pressure_for_altitude(p)
     x2 = mdates.date2num(x)
     x_sm = np.array(x2)
     x_smooth = np.linspace(x_sm.min(), x_sm.max(), 200)
@@ -108,9 +174,9 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
 
     pp.set_ylim([pressure_min, pressure_max])
     # plot boundaries of normal pressure
-    pp.axhline(y=1009.689, color="tab:blue", linestyle="--", alpha=0.3)
+    pp.axhline(y=1010, color="tab:blue", linestyle="--", alpha=0.3)
     # mean pressure pp.axhline(y=1013, color="tab:blue", linestyle="--", alpha=0.3)
-    pp.axhline(y=1022.144, color="tab:blue", linestyle="--", alpha=0.3)
+    pp.axhline(y=1020, color="tab:blue", linestyle="--", alpha=0.3)
     hh.set_ylim([0, 100])
     plt.title(f"{area_name} Temperature, Humidity and Pressure logged by Pi")
 
@@ -130,57 +196,64 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
         plt.close("all")
     return
 
-
 def readValues(*args, **kwargs):
-    """for key, value in kwargs.items():     #Debug
-    print ("%s == %s" %(key, value)) #Debug
-    """
-    print("From: ", kwargs.get("from_date"))
-    print("To: ", kwargs.get("to_date"))
+    data = load_log_cached()
+    if not data:
+        return [], [], [], []
+    from_dt = None
+    to_dt = None
 
-    if kwargs.get("lines") is not None:
-        reading_count = kwargs.get("lines")
-    else:
-        reading_count = args[0]
+    data_start = data[0][0]
+    data_end   = data[-1][0]
 
-    x = []  # Datetime
-    y = []  # Temperature
-    h = []  # Humidity
-    p = []  # Presure
-    x.clear()
-    y.clear()
-    h.clear()
-    p.clear()
+    if from_dt is not None and from_dt < data_start:
+        from_dt = data_start
+    if to_dt is not None and to_dt > data_end:
+        to_dt = data_end
 
+
+    x, y, h, p = [], [], [], []
     tailmode = kwargs.get("tailmode", False)
-    if not tailmode:
-        from_dt = date_to_dt(kwargs.get("from_date"), DT_FORMAT)
-        to_dt = date_to_dt(kwargs.get("to_date"), DT_FORMAT)
 
-    filename = os.path.join(APP_ROOT, "data-log/hpt.log")
-    with open(filename, "r", encoding="utf-8") as f:
-        if tailmode:
-            taildata = f.readlines()[-reading_count:]
+    if tailmode:
+        # tail mode MUST supply reading_count
+        if args:
+            reading_count = args[0]
+        elif "lines" in kwargs:
+            reading_count = kwargs["lines"]
         else:
-            taildata = f.readlines()
-        for line in taildata:
-            line = line.translate({ord(i): None for i in "[]"})
-            data = split(" ", line)
-            temp, humidity, pressure = float(data[2]), float(data[3]), float(data[4])
-            dt = f"{data[0]} {data[1]}"
-            dt = date_to_dt(dt, LOG_DATE_FORMAT)
-            if tailmode:
-                x.append(dt)
-                y.append(temp)
-                h.append(humidity)
-                p.append(pressure)
-            else:
-                if (dt >= from_dt) and (dt <= to_dt):
-                    x.append(dt)
-                    y.append(temp)
-                    h.append(humidity)
-                    p.append(pressure)
+            raise ValueError("tailmode=True requires reading count")
+        data = data[-reading_count:]
+        for dt, t, hum, pres in data:
+            if from_dt is not None and dt < from_dt:
+                continue
+            if to_dt is not None and dt > to_dt:
+                break
+            x.append(dt)
+            y.append(t)
+            h.append(hum)
+            p.append(pres)
         return x, y, h, p
+
+    else:
+        # range mode MUST supply from_date / to_date
+        if "from_date" not in kwargs or "to_date" not in kwargs:
+            raise ValueError("range mode requires from_date and to_date")
+
+        from_dt = date_to_dt(kwargs["from_date"], LOG_DATE_FORMAT)
+        to_dt   = date_to_dt(kwargs["to_date"], LOG_DATE_FORMAT)
+
+    for dt, t, hum, pres in data:
+        if from_dt and dt < from_dt:
+            continue
+        if to_dt and dt > to_dt:
+            break  # chronological → safe
+        x.append(dt)
+        y.append(t)
+        h.append(hum)
+        p.append(pres)
+
+    return x, y, h, p
 
 
 def cmd_args(args=None):

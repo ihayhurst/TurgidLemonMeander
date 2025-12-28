@@ -10,22 +10,16 @@
         {% endfor %}
       </ul></h5>
       <h5>Current Pi Temp: {{currentPiTemp }}</h5>
-      <img src="data:image/png;base64, {{ graphImageData }}" alt="Temperature Graph" height="600" width="1000">
+  <input type="range" min="1" max="168" value="48" id="hoursSlider">
+	<span id="hoursLabel">24 hours</span>
+   <button id="prevDay">◀ Previous Day</button>
+   <button id="nextDay">Next Day ▶</button> 
 
-      <div class="graph-controls">
-        <form action = "/" method = "POST">
-          <p>Text field <input type = "text" name = "date_range" /></p>
-          <input type="radio" name="region" value="2"> 2 Hours <br/>
-          <input type="radio" name="region" value="4"> 4 Hours <br/>
-          <input type="radio" name="region" value="12"> 12 Hours <br/>
-          <input type="radio" name="region" value="24"> 24 Hours <br/>
-          <input type="radio" name="region" value="48"> 48 Hours <br/>
-          <input type="radio" name="region" value="72"> 72 Hours <br/>
-          <input type="radio" name="region" value="168"> 1 Week<br/>
-          <input type="radio" name="region" value="336"> 2 Weeks<br/>
-          <input type="radio" name="region" value="720"> 30 days<br/>
-          <p><input type = "submit" value = "Redraw" /></p>
-        </form>
-      </div>
+
+
+	<div id="graph"></div>
+
+	<script src="https://cdn.plot.ly/plotly-3.3.0.min.js"></script>
+	<script src="{{ url_for('website.static', filename='graph.js') }}"></script>
     </div>
 {% endblock %}
