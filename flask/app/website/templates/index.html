@@ -10,8 +10,12 @@
         {% endfor %}
       </ul></h5>
       <h5>Current Pi Temp: {{currentPiTemp }}</h5>
-    <input type="range" min="1" max="168" value="24" id="hoursSlider">
+  <input type="range" min="1" max="168" value="48" id="hoursSlider">
 	<span id="hoursLabel">24 hours</span>
+   <button id="prevDay">◀ Previous Day</button>
+   <button id="nextDay">Next Day ▶</button> 
+
+
 
 	<div id="graph"></div>
 

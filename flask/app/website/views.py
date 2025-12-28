@@ -4,7 +4,9 @@ from flask import render_template, Blueprint, request, jsonify
 from flask import __version__ as __flask_version__
 from flask import current_app
 from app.website import graph
+import datetime
 
+LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 website = Blueprint(
     "website",
     __name__,
@@ -56,11 +58,23 @@ def website_mpl():
 
 @website.route("/graph-data")
 def graph_data():
-    hours = int(request.args.get("hours", 24))
-    readings = hours * 6  # 600s logging
+    if "start" in request.args and "end" in request.args:
+        start_iso = request.args["start"].replace("Z", "")
+        end_iso   = request.args["end"].replace("Z", "")
+        print(f'{request.args["start"]}')
 
-    data = graph.prepareGraphData(readings)
-    return jsonify(data)
+        start_dt = datetime.datetime.fromisoformat(start_iso)
+        end_dt   = datetime.datetime.fromisoformat(end_iso)
+        start_str =graph.dt_to_date(start_dt, LOG_DATE_FORMAT)
+        end_str   =graph.dt_to_date(end_dt, LOG_DATE_FORMAT)
+
+        print(f"{start_str=},{end_str=}")
+        return jsonify(graph.prepareGraphData_range(start_str, end_str))
+
+    # fallback tailing that last logged data
+    hours = int(request.args.get("hours", 48))
+    reading_count = hours * 6  # or whatever your cadence is
+    return jsonify(graph.prepareGraphData(reading_count))
 
 
 @website.route("/about")
