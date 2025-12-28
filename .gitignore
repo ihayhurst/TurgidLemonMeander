@@ -3,3 +3,4 @@ venv/
 __pycache__/
 hpt.log
 instance/
+data-log/Random-hpt.log
