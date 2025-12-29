@@ -39,12 +39,18 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))  # refers to application_t
 APP_STATIC = os.path.join(APP_ROOT, "static")
 _cached_log = None
 _cached_mtime = None
+_ALT_CORR = None
+
+def pressure_altitude_offset():
+    global _ALT_CORR
+    if _ALT_CORR is None:
+        altitude = get_config("ALTITUDE")
+        _ALT_CORR = round(altitude * 0.12677457, 1)
+    return _ALT_CORR
 
 def correct_pressure_for_altitude(p_values):
-    # correct every pressure in list for altitude (to graph sealevel pressure not local)
-    altitude = get_config("ALTITUDE")
-    alt_factor = 0.12677457
-    return [p + altitude * alt_factor for p in p_values]
+    offset = pressure_altitude_offset()
+    return [round(p + offset, 1) for p in p_values]
 
 
 def prepareGraphData(reading_count):
@@ -55,7 +61,7 @@ def prepareGraphData(reading_count):
     return {
         "time": [dt.isoformat() for dt in x],
         "temperature": y,
-        "humidity": h,
+        "humidity": [round(v, 1) for v in h],
         "pressure": p,
     }
 
@@ -72,7 +78,7 @@ def prepareGraphData_range(start_dt, end_dt):
     return {
         "time": [dt.isoformat() for dt in x],
         "temperature": y,
-        "humidity": h,
+        "humidity": [round(v, 1) for v in h],
         "pressure": p,
     }
 
@@ -94,7 +100,10 @@ def load_log_cached():
                     continue
                 try:
                     dt = date_to_dt(f"{parts[0]} {parts[1]}", LOG_DATE_FORMAT)
-                    t, h, p = map(float, parts[2:5])
+                    #t, h, p = map(float, parts[2:5])
+                    t = round(float(parts[2]), 2)
+                    h = round(float(parts[3]), 1)
+                    p = round(float(parts[4]), 1)
                 except ValueError:
                     continue
                 data.append((dt, t, h, p))
@@ -158,7 +167,6 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
     for label in ax.xaxis.get_minorticklabels()[::2]:  # show every other minor label
         label.set_visible(True)
     ax.tick_params(axis="both", which="major", labelsize=10)
-
     plt.xlabel("Time (Month-Day - Hour: Minutes)")
     temperature_color = "tab:red"
     humidity_color = "tab:green"

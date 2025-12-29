@@ -91,7 +91,8 @@ async function drawGraph() {
             yaxis: "y2",
             type: "scatter",
             mode: "lines",
-            line: { color: "green", width: 2 }
+            line: { color: "green", width: 2, shape: "spline", smoothing: 1.3, simplify: true },
+            connectgaps: false
         },
         {
             x: data.time,
