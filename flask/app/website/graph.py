@@ -118,6 +118,67 @@ def clean_log_line(line):
     return line.replace("\x00", "").translate({91: None, 93: None}).strip()
 
 
+
+
+def readValues(*args, **kwargs):
+    data = load_log_cached()
+    if not data:
+        return [], [], [], []
+    from_dt = None
+    to_dt = None
+
+    data_start = data[0][0]
+    data_end   = data[-1][0]
+
+    if from_dt is not None and from_dt < data_start:
+        from_dt = data_start
+    if to_dt is not None and to_dt > data_end:
+        to_dt = data_end
+
+
+    x, y, h, p = [], [], [], []
+    tailmode = kwargs.get("tailmode", False)
+
+    if tailmode:
+        # tail mode MUST supply reading_count
+        if args:
+            reading_count = args[0]
+        elif "lines" in kwargs:
+            reading_count = kwargs["lines"]
+        else:
+            raise ValueError("tailmode=True requires reading count")
+        data = data[-reading_count:]
+        for dt, t, hum, pres in data:
+            if from_dt is not None and dt < from_dt:
+                continue
+            if to_dt is not None and dt > to_dt:
+                break
+            x.append(dt)
+            y.append(t)
+            h.append(hum)
+            p.append(pres)
+        return x, y, h, p
+
+    else:
+        # range mode MUST supply from_date / to_date
+        if "from_date" not in kwargs or "to_date" not in kwargs:
+            raise ValueError("range mode requires from_date and to_date")
+
+        from_dt = date_to_dt(kwargs["from_date"], LOG_DATE_FORMAT)
+        to_dt   = date_to_dt(kwargs["to_date"], LOG_DATE_FORMAT)
+
+    for dt, t, hum, pres in data:
+        if from_dt and dt < from_dt:
+            continue
+        if to_dt and dt > to_dt:
+            break  # chronological → safe
+        x.append(dt)
+        y.append(t)
+        h.append(hum)
+        p.append(pres)
+
+    return x, y, h, p
+
 def generateGraph(reading_count, area_name):
     """Wrapper for drawgraph called from """
 
@@ -203,65 +264,6 @@ def drawGraph(x, y, h, p, area_name, **kwargs):
         plt.clf()
         plt.close("all")
     return
-
-def readValues(*args, **kwargs):
-    data = load_log_cached()
-    if not data:
-        return [], [], [], []
-    from_dt = None
-    to_dt = None
-
-    data_start = data[0][0]
-    data_end   = data[-1][0]
-
-    if from_dt is not None and from_dt < data_start:
-        from_dt = data_start
-    if to_dt is not None and to_dt > data_end:
-        to_dt = data_end
-
-
-    x, y, h, p = [], [], [], []
-    tailmode = kwargs.get("tailmode", False)
-
-    if tailmode:
-        # tail mode MUST supply reading_count
-        if args:
-            reading_count = args[0]
-        elif "lines" in kwargs:
-            reading_count = kwargs["lines"]
-        else:
-            raise ValueError("tailmode=True requires reading count")
-        data = data[-reading_count:]
-        for dt, t, hum, pres in data:
-            if from_dt is not None and dt < from_dt:
-                continue
-            if to_dt is not None and dt > to_dt:
-                break
-            x.append(dt)
-            y.append(t)
-            h.append(hum)
-            p.append(pres)
-        return x, y, h, p
-
-    else:
-        # range mode MUST supply from_date / to_date
-        if "from_date" not in kwargs or "to_date" not in kwargs:
-            raise ValueError("range mode requires from_date and to_date")
-
-        from_dt = date_to_dt(kwargs["from_date"], LOG_DATE_FORMAT)
-        to_dt   = date_to_dt(kwargs["to_date"], LOG_DATE_FORMAT)
-
-    for dt, t, hum, pres in data:
-        if from_dt and dt < from_dt:
-            continue
-        if to_dt and dt > to_dt:
-            break  # chronological → safe
-        x.append(dt)
-        y.append(t)
-        h.append(hum)
-        p.append(pres)
-
-    return x, y, h, p
 
 
 def cmd_args(args=None):
