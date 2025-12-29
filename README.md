@@ -1,6 +1,5 @@
 # Weather-Report
-A follow-up project of [temp-report](https://github.com/stuarthayhurst/temp-report), using a Raspberry Pi and BME280 sensor to monitor temperature, humidity and barometric pressure, then graph it on a flask based website.
- - Using Docker enables us to scrap the messy install script with numerous tmux sessions, and start the logging in a container that starts with the system
+A follow-up project of [temp-report](https://github.com/stuarthayhurst/temp-report),using a Raspberry Pi and BME280 sensor to monitor temperature, humidity and barometric pressure. Data is logged continuously and visualised via a Flask-based website, with interactive navigation of historical readings.
 
 Containers:
  - flask: python 3.11 flask website using uWSGI on port 8080
@@ -8,6 +7,24 @@ Containers:
  - log: python  reading rpi I2c BME280 sensor and logging it
 
 Fritzing circut diag image credit: Matt Hawkins (probably)
+
+## Web interface
+
+The Flask application now serves an interactive chart backed by a JSON data endpoint.  
+This allows browsing historical data ranges using day navigation buttons and a time slider, rather than relying solely on static matplotlib output.
+
+To improve performance on low-powered hardware (e.g. Raspberry Pi), log data is cached in memory and only reloaded when the underlying log file changes.
+
+### About graphing
+
+Matplotlib is still used for legacy and CLI-driven graph generation, but the primary web interface renders charts dynamically in the browser using JSON data served by Flask.
+
+## Notes
+
+- This is intended as a lightweight, single-device project rather than a general-purpose time-series system.
+- Log files grow continuously unless rotated externally.
+- Performance is tuned for Raspberry Pi–class hardware and low request volumes.
+
 
 ## Getting started
  ### Connecting the sensor:
@@ -43,5 +60,7 @@ Fritzing circut diag image credit: Matt Hawkins (probably)
 ## Diagrams:
 
 ![Example output](https://github.com/ihayhurst/TurgidLemonMeander/blob/master/docs/graph.png?raw=true)
+![Example output (historical range view)](https://github.com/ihayhurst/TurgidLemonMeander/blob/master/docs/screenshot-2025-12-29.png?raw=true))
+
 
 ![Circuit diagram](https://github.com/ihayhurst/TurgidLemonMeander/blob/master/docs/BMP280-fritzing.png?raw=true)
