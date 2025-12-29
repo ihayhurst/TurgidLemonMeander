@@ -11,30 +11,26 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
 from scipy.interpolate import UnivariateSpline
-
 from flask import Blueprint
 from flask import current_app as app
+from flask import has_app_context
 
-
+mpl.use("agg")
 website = Blueprint("website", __name__)
 
 
-def get_config(configKey: str =None) ->str:
-    """
-    given a config_key fetch the value from the app config
-    return value
-    """
-    with app.app_context():
-        configItem = app.config[configKey]
-    return configItem
 
-mpl.use("agg")
+def get_config(key):
+    if has_app_context():
+        return app.config[key]
+    raise RuntimeError("No Flask app context available")
 
-DT_FORMAT = "%Y/%m/%d-%H:%M"  # format used on the cli
+
 
 # import from config
 # LOG_DATE_FORMAT  # in config.py to match the format in the log file
 LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+DT_FORMAT = "%Y/%m/%d-%H:%M"  # format used on the cli
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))  # refers to application_top
 APP_STATIC = os.path.join(APP_ROOT, "static")
 _cached_log = None
@@ -47,6 +43,7 @@ def pressure_altitude_offset():
         altitude = get_config("ALTITUDE")
         _ALT_CORR = round(altitude * 0.12677457, 1)
     return _ALT_CORR
+
 
 def correct_pressure_for_altitude(p_values):
     offset = pressure_altitude_offset()
@@ -65,6 +62,7 @@ def prepareGraphData(reading_count):
         "pressure": p,
     }
 
+
 def prepareGraphData_range(start_dt, end_dt):
     x, y, h, p = readValues(
         #from_dt=datetime.datetime.fromisoformat(start_dt),
@@ -82,6 +80,7 @@ def prepareGraphData_range(start_dt, end_dt):
         "pressure": p,
     }
 
+
 def load_log_cached():
     global _cached_log, _cached_mtime
     LOG_FILE = os.path.join(website.root_path, "data-log/hpt.log")
@@ -89,7 +88,6 @@ def load_log_cached():
 
     if _cached_log is None or stat.st_mtime != _cached_mtime:
         data = []
-        rdata = []
         with open(LOG_FILE) as f:
             for line in f:
                 if not line:
@@ -114,70 +112,81 @@ def load_log_cached():
 
     return _cached_log
 
+
 def clean_log_line(line):
     return line.replace("\x00", "").translate({91: None, 93: None}).strip()
 
+def select_rows_tail(data, count):
+    return data[-count:]
 
+
+def select_rows_range(data, from_dt, to_dt):
+    rows = []
+    for row in data:
+        dt = row[0]
+        if dt < from_dt:
+            continue
+        if dt > to_dt:
+            break
+        rows.append(row)
+    return rows
+
+
+def parse_and_clamp_range(data, from_date, to_date):
+    data_start = data[0][0]
+    data_end   = data[-1][0]
+
+    from_dt = date_to_dt(from_date, LOG_DATE_FORMAT)
+    to_dt   = date_to_dt(to_date, LOG_DATE_FORMAT)
+
+    if from_dt < data_start:
+        from_dt = data_start
+    if to_dt > data_end:
+        to_dt = data_end
+
+    return from_dt, to_dt
+
+
+def rows_to_series(rows):
+    x, y, h, p = [], [], [], []
+    for dt, t, hum, pres in rows:
+        x.append(dt)
+        y.append(t)
+        h.append(hum)
+        p.append(pres)
+    return x, y, h, p
 
 
 def readValues(*args, **kwargs):
     data = load_log_cached()
     if not data:
         return [], [], [], []
-    from_dt = None
-    to_dt = None
 
-    data_start = data[0][0]
-    data_end   = data[-1][0]
-
-    if from_dt is not None and from_dt < data_start:
-        from_dt = data_start
-    if to_dt is not None and to_dt > data_end:
-        to_dt = data_end
-
-
-    x, y, h, p = [], [], [], []
     tailmode = kwargs.get("tailmode", False)
 
     if tailmode:
-        # tail mode MUST supply reading_count
         if args:
-            reading_count = args[0]
+            count = args[0]
         elif "lines" in kwargs:
-            reading_count = kwargs["lines"]
+            count = kwargs["lines"]
         else:
-            raise ValueError("tailmode=True requires reading count")
-        data = data[-reading_count:]
-        for dt, t, hum, pres in data:
-            if from_dt is not None and dt < from_dt:
-                continue
-            if to_dt is not None and dt > to_dt:
-                break
-            x.append(dt)
-            y.append(t)
-            h.append(hum)
-            p.append(pres)
-        return x, y, h, p
+            raise ValueError("tailmode requires reading count")
+
+        rows = select_rows_tail(data, count)
 
     else:
-        # range mode MUST supply from_date / to_date
         if "from_date" not in kwargs or "to_date" not in kwargs:
             raise ValueError("range mode requires from_date and to_date")
 
-        from_dt = date_to_dt(kwargs["from_date"], LOG_DATE_FORMAT)
-        to_dt   = date_to_dt(kwargs["to_date"], LOG_DATE_FORMAT)
+        from_dt, to_dt = parse_and_clamp_range(
+            data,
+            kwargs["from_date"],
+            kwargs["to_date"],
+        )
+        rows = select_rows_range(data, from_dt, to_dt)
 
-    for dt, t, hum, pres in data:
-        if from_dt and dt < from_dt:
-            continue
-        if to_dt and dt > to_dt:
-            break  # chronological → safe
-        x.append(dt)
-        y.append(t)
-        h.append(hum)
-        p.append(pres)
+    return rows_to_series(rows)
 
-    return x, y, h, p
 
 def generateGraph(reading_count, area_name):
     """Wrapper for drawgraph called from """
