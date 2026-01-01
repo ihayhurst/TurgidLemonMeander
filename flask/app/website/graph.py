@@ -55,13 +55,47 @@ def prepareGraphData(reading_count):
 
     p = correct_pressure_for_altitude(p)
 
+    rows = load_log_cached()
+    trend = pressure_trend(rows, hours=3)
+
+
     return {
         "time": [dt.isoformat() for dt in x],
         "temperature": y,
         "humidity": [round(v, 1) for v in h],
         "pressure": p,
+        "pressure_trend": trend,
     }
 
+
+def pressure_trend(data, hours=3, warn_hpa=3.0):
+    """
+    data: list of (dt, t, h, p) sorted by dt
+    returns (delta, p_now, p_then) or (None, None, None)
+    """
+    if not data:
+        return None, None, None
+
+    end_dt, _, _, end_p = data[-1]
+    start_dt = end_dt - datetime.timedelta(hours=hours)
+
+    # Find closest reading at or before start_dt
+    start_p = None
+    for dt, _, _, p in reversed(data):
+        if dt <= start_dt:
+            start_p = p
+            break
+
+    if start_p is None:
+        return None
+
+    delta = round(end_p - start_p, 1)
+    return {
+        "hours": hours,
+        "delta_hpa": delta,
+        "direction": "up" if delta > 0 else "down" if delta < 0 else "flat",
+        "warning": abs(delta) >= warn_hpa,
+    }
 
 def prepareGraphData_range(start_dt, end_dt):
     x, y, h, p = readValues(
@@ -72,12 +106,17 @@ def prepareGraphData_range(start_dt, end_dt):
         tailmode=False,
     )
     p = correct_pressure_for_altitude(p)
+    rows = load_log_cached()
+    trend = pressure_trend(rows, hours=3)
+
+
 
     return {
         "time": [dt.isoformat() for dt in x],
         "temperature": y,
         "humidity": [round(v, 1) for v in h],
         "pressure": p,
+        "pressure_trend": trend,
     }
 
 

@@ -35,13 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
         currentEnd = new Date(currentEnd.getTime() + 24 * 3600 * 1000);
         drawGraph();
     };
-    slider.addEventListener("input", () => {
-    console.log("Slider moved:", slider.value);
-    windowHours = parseInt(slider.value);
-    label.textContent = `${windowHours} hours`;
-    drawGraph();
-});
-
+    
 });
 
 async function drawGraph() {
@@ -73,6 +67,32 @@ async function drawGraph() {
     }
 
     const data = await response.json();
+
+// ---- Pressure trend UI ----
+const trendEl = document.getElementById("pressure-trend");
+const trend = data.pressure_trend;
+
+if (!trend) {
+    trendEl.textContent = "";
+    trendEl.className = "trend";
+    return;
+}
+
+const arrow =
+    trend.direction === "up"   ? "↑" :
+    trend.direction === "down" ? "↓" :
+                                 "→";
+
+const sign = trend.delta_hpa > 0 ? "+" : "";
+
+trendEl.textContent =
+    `${arrow} ${sign}${trend.delta_hpa} hPa (last ${trend.hours}h)`;
+
+trendEl.className = "trend";
+if (trend.warning) {
+    trendEl.classList.add("warning");
+}
+
 
     const traces = [
         {
