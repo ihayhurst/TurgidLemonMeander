@@ -122,10 +122,39 @@ if (trend.warning) {
             type: "scatter",
             mode: "lines",
             line: { color: "blue", width: 2 }
-        }
+        },
+        {
+            x: data.time,
+            y: data.dewpoint,
+            name: "Dew Point °C",
+            yaxis: "y",
+            type: "scatter",
+            mode: "lines",
+            line: { color: "purple", width: 1, dash: "dot" }
+}
+
+
     ];
 
+
     const isMobile = window.innerWidth < 768;
+    const fogShapes = [];
+
+    for (let i = 0; i < data.time.length; i++) {
+    if (data.dewpoint_spread[i] <= 2) {
+    fogShapes.push({
+      type: "rect",
+      xref: "x",
+      yref: "paper",
+      x0: data.time[i],
+      x1: data.time[i + 1] || data.time[i],
+      y0: 0,
+      y1: 1,
+      fillcolor: "rgba(180,180,255,0.15)",
+      line: { width: 0 }
+    });
+  }
+}
 
     const layout = {
         title: "Temperature, Humidity and Pressure",
@@ -147,6 +176,7 @@ if (trend.warning) {
             side: "right",
             position: 1.08
         },
+        
         shapes: [
     // freezing point 0°C
     { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y", y0: 0, y1: 0, line: { color: "red", dash: "dash", width: 1 } },
@@ -155,7 +185,8 @@ if (trend.warning) {
     { type: "line", xref: "paper", x0: 0, x1: 1, yref: "y3", y0: 1013, y1: 1013, line: { color: "blue", dash: "dash", width: 1 } },
 
     // high/low pressure band
-    { type: "rect", xref: "paper", x0: 0, x1: 1, yref: "y3", y0: 1010, y1: 1020, fillcolor: "rgba(173, 216, 230, 0.3)", line: { width: 0 } }
+    { type: "rect", xref: "paper", x0: 0, x1: 1, yref: "y3", y0: 1010, y1: 1020, fillcolor: "rgba(173, 216, 230, 0.3)", line: { width: 0 } },
+    ...fogShapes
   ],
 
         height: isMobile ? 420 : 640,
