@@ -60,7 +60,7 @@ Matplotlib is still used for legacy and CLI-driven graph generation, but the pri
 ## Diagrams:
 
 ![Example output](https://github.com/ihayhurst/TurgidLemonMeander/blob/master/docs/graph.png?raw=true)
-![Example output (historical range view)](https://github.com/ihayhurst/TurgidLemonMeander/blob/master/docs/screenshot-2025-12-29.png?raw=true))
+![Example output (historical range view)](https://github.com/ihayhurst/TurgidLemonMeander/blob/master/docs/screenshot-2026-01-02.png?raw=true))
 
 
 ![Circuit diagram](https://github.com/ihayhurst/TurgidLemonMeander/blob/master/docs/BMP280-fritzing.png?raw=true)
