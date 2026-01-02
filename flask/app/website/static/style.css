@@ -90,3 +90,18 @@ width: 90%;
 ::selection,::-moz-selection {
 background:#4ace4f;
 }
+
+.warning {
+    color: #b30000;
+    font-weight: bold;
+}
+
+.pressure-trend {
+    margin: 0.5em 0;
+    font-size: 0.9rem;
+    color: #999;
+}
+.pressure-trend.warning {
+    color: #b30000;
+    font-weight: 600;
+}

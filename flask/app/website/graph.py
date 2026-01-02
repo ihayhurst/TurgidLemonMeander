@@ -5,6 +5,7 @@ import argparse
 import datetime
 import base64
 import io
+import math
 from re import split
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -49,11 +50,39 @@ def correct_pressure_for_altitude(p_values):
     offset = pressure_altitude_offset()
     return [round(p + offset, 1) for p in p_values]
 
+def dew_point_series(temps, humidities):
+    return [
+        dew_point_c(t, h) if h > 0 else None
+        for t, h in zip(temps, humidities)
+    ]
+
+def calc_dewpoint_spread(temps, dewpoint):
+    return [
+        round(r - d, 1) if d is not None else None
+        for r, d in zip(temps, dewpoint)
+    ]
+
+def dew_point_c(temp_c, rh_percent):
+    if rh_percent <= 0:
+        return None  # physically undefined
+
+    a = 17.62
+    b = 243.12
+
+    gamma = math.log(rh_percent / 100.0) + (a * temp_c) / (b + temp_c)
+    dewpoint = (b * gamma) / (a - gamma)
+
+    return round(dewpoint, 1)
+
+
 
 def prepareGraphData(reading_count):
     x, y, h, p = readValues(reading_count, tailmode=True)
 
     p = correct_pressure_for_altitude(p)
+    dew = dew_point_series(y, h)
+    dewpoint_spread = calc_dewpoint_spread(y, dew)
+
 
     rows = load_log_cached()
     trend = pressure_trend(rows, hours=3)
@@ -64,6 +93,8 @@ def prepareGraphData(reading_count):
         "temperature": y,
         "humidity": [round(v, 1) for v in h],
         "pressure": p,
+        "dewpoint": dew,
+        "dewpoint_spread": dewpoint_spread,
         "pressure_trend": trend,
     }
 
@@ -106,6 +137,10 @@ def prepareGraphData_range(start_dt, end_dt):
         tailmode=False,
     )
     p = correct_pressure_for_altitude(p)
+    dew = dew_point_series(y, h)
+    dewpoint_spread = calc_dewpoint_spread(y, dew)
+
+
     rows = load_log_cached()
     trend = pressure_trend(rows, hours=3)
 
@@ -116,6 +151,8 @@ def prepareGraphData_range(start_dt, end_dt):
         "temperature": y,
         "humidity": [round(v, 1) for v in h],
         "pressure": p,
+        "dewpoint": dew,
+        "dewpoint_spread": dewpoint_spread,
         "pressure_trend": trend,
     }
 
