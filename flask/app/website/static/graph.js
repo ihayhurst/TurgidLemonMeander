@@ -7,6 +7,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const label  = document.getElementById("hoursLabel");
     const prevBtn = document.getElementById("prevDay");
     const nextBtn = document.getElementById("nextDay");
+    const endInput = document.getElementById("endDateInput");
+
+    // Initialise to "now"
+    endInput.value = currentEnd.toISOString().slice(0, 16);
 
     // Initialise state FROM slider
     windowHours = parseInt(slider.value);
@@ -26,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     prevBtn.onclick = () => {
         console.log("Prev day clicked");
         currentEnd = new Date(currentEnd.getTime() - 24 * 3600 * 1000);
+        endInput.value = currentEnd.toISOString().slice(0, 16);
         drawGraph();
     };
 
@@ -33,9 +38,19 @@ document.addEventListener("DOMContentLoaded", () => {
     nextBtn.onclick = () => {
         console.log("Next day clicked");
         currentEnd = new Date(currentEnd.getTime() + 24 * 3600 * 1000);
+        endInput.value = currentEnd.toISOString().slice(0, 16);
         drawGraph();
     };
-    
+
+    // Date jump box
+    endInput.addEventListener("change", () => {
+    if (!endInput.value) {
+        currentEnd = new Date();  // fallback to now
+    } else {
+        currentEnd = new Date(endInput.value);
+    }
+    drawGraph();
+    });
 });
 
 async function drawGraph() {

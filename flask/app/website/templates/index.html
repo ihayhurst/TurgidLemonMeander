@@ -11,7 +11,10 @@
         <li><div id="pressure-trend" class="trend"></div></li>
       </ul></h5>
       <h5>Current Pi Temp: {{currentPiTemp }}</h5>
-  <input type="range" min="1" max="168" value="48" id="hoursSlider">
+<label for="endDateInput">End date:</label>
+<small>Leave empty = now</small>
+<input type="datetime-local" id="endDateInput" />
+  <input type="range" min="1" max="336" value="48" id="hoursSlider">
 	<span id="hoursLabel">24 hours</span>
    <button id="prevDay">◀ Previous Day</button>
    <button id="nextDay">Next Day ▶</button> 
