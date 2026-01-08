@@ -1,4 +1,4 @@
-# Weather-Report
+# Log and visualise Pressure, Temperature and Humidity trends with RPi
 A follow-up project of [temp-report](https://github.com/stuarthayhurst/temp-report),using a Raspberry Pi and BME280 sensor to monitor temperature, humidity and barometric pressure. Data is logged continuously and visualised via a Flask-based website, with interactive navigation of historical readings.
 
 Containers:
